@@ -93,9 +93,9 @@ Twinkle.xfd.callback = function twinklexfdCallback() {
 	var Window = new Morebits.simpleWindow(700, 400);
 	Window.setTitle('Maak verwijdernominatie (TBx)');
 	Window.setScriptName('Twinkle');
-	Window.addFooterLink('Over verwijdernominaties', 'WP:XFD');
-	Window.addFooterLink('TBx voorkeuren', 'WP:TW/PREF#xfd');
-	Window.addFooterLink('Twinkle help', 'WP:TW/DOC#xfd');
+	Window.addFooterLink('Over verwijdernominaties', 'WP:TBP');
+	Window.addFooterLink('TBx voorkeuren', 'Wikipedia:Twinkle/Preferences');
+	Window.addFooterLink('Twinkle help', 'WP:TW/DOC##TBx_(Te_Beoordelen_...)');
 
 	var form = new Morebits.quickForm(Twinkle.xfd.callback.evaluate);
 	var categories = form.append({
