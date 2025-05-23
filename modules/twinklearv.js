@@ -425,7 +425,7 @@ Twinkle.arv.processSock = function(params) {
 	Morebits.wiki.actionCompleted.notice = 'Rapporteren succesvol';
 
 	var spiPage = new Morebits.wiki.page('Wikipedia:Verzoekpagina voor moderatoren/Sokpoppen', 'Verzoekpagina ophalen');
-	spiPage.setPageSection(2); // Geteld vanaf boven
+	spiPage.setPageSection(1); // Geteld vanaf boven
 	spiPage.setFollowRedirect(true);
 
 	spiPage.load(function() {

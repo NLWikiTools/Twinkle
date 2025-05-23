@@ -640,6 +640,7 @@ Twinkle.protect.doCustomExpiry = function twinkleprotectDoCustomExpiry(target) {
 Twinkle.protect.protectionLevels = [
 	{ label: 'Alle gebruikers', value: 'all' },
 	{ label: 'Bevestigde gebruikers', value: 'autoconfirmed' },
+	{ label: 'Uitgebreid bevestigde gebruikers', value: 'extendedconfirmed' },
 	{ label: 'Moderatoren', value: 'sysop', selected: true }
 ];
 
@@ -675,6 +676,20 @@ Twinkle.protect.protectionTypes = [
 			{ label: 'Veelbezochte pagina (full)', value: 'full-veelbezocht' },
 			{ label: 'Reclame/zelfpromotie (full)', value: 'full-spam' },
 			{ label: 'Archiefpagina (full)', value: 'full-archief' }
+		]
+	},
+	{
+		label: 'Uitgebreid bevestigde beveiliging',
+		list: [
+			{ label: 'Algemeen (extended)', value: 'extended-algemeen' },
+			{ label: 'Bewerkingsoorlog (extended)', value: 'extended-bwo' },
+			{ label: 'Herhaald vandalisme (extended)', value: 'extended-vandalisme' },
+			{ label: 'BLP-schendingen (extended)', value: 'extended-blp' },
+			{ label: 'Sokpopperij (extended)', value: 'extended-sokpop' },
+			{ label: 'Recente gebeurtenissen (extended)', value: 'extended-recent' },
+			{ label: 'Veelbezochte pagina (extended)', value: 'extended-veelbezocht' },
+			{ label: 'Reclame/zelfpromotie (extended)', value: 'extended-spam' },
+			{ label: 'Archiefpagina (extended)', value: 'extended-archief' }
 		]
 	},
 	{
@@ -748,8 +763,8 @@ Twinkle.protect.protectionWeight = {
 	 * create: required level to create
 	 * stabilize: required level for pending changes
 	 * expiry: default protection duration
-	 * reason: defailt reason to add to pendingchange log
-	 * template: template to add to the page
+	 * reason: default reason to add to pendingchange log
+	 * template: template to add to the page (not applicable to nlwiki)
 	 * */
 Twinkle.protect.protectionPresetsInfo = {
 	'full-algemeen': {
@@ -785,6 +800,55 @@ Twinkle.protect.protectionPresetsInfo = {
 	'full-archief': {
 		edit: 'sysop',
 		move: 'sysop',
+		expiry: 'infinity',
+		reason: 'Archiefpagina'
+	},
+	'extended-algemeen': {
+		edit: 'extendedconfirmed',
+		move: 'extendedconfirmed',
+		reason: null
+	},
+	'extended-bwo': {
+		edit: 'extendedconfirmed',
+		move: 'extendedconfirmed',
+		reason: '[[WP:BWO|Bewerkingsoorlog]]'
+	},
+	'extended-vandalisme': {
+		edit: 'extendedconfirmed',
+		move: 'extendedconfirmed',
+		reason: '[[WP:Vandalisme|Herhaald vandalisme]], stoppen vereist extendedconfirmed beveiliging'
+	},
+	'extended-blp': {
+		edit: 'extendedconfirmed',
+		move: 'extendedconfirmed',
+		expiry: 'infinity',
+		reason: '[[WP:BLP|Herhaalde schending WP:BLP]]'
+	},
+	'extended-sokpop': {
+		edit: 'extendedconfirmed',
+		move: 'extendedconfirmed',
+		expiry: 'infinity',
+		reason: 'Herhaald misbruik door sokpoppen'
+	},
+	'extended-recent': {
+		edit: 'extendedconfirmed',
+		move: 'extendedconfirmed',
+		reason: 'Beveiliging wegens actuele/recente gebeurtenissen en ontwikkelingen'
+	},
+	'extended-veelbezocht': {
+		edit: 'extendedconfirmed',
+		move: 'extendedconfirmed',
+		reason: 'Preventieve beveiliging v/e veelbezochte pagina'
+	},
+	'extended-spam': {
+		edit: 'extendedconfirmed',
+		move: 'extendedconfirmed',
+		expiry: 'infinity',
+		reason: 'Herhaaldelijke expliciete reclame, werving, propaganda of zelfpromotie'
+	},
+	'extended-archief': {
+		edit: 'extendedconfirmed',
+		move: 'extendedconfirmed',
 		expiry: 'infinity',
 		reason: 'Archiefpagina'
 	},
@@ -1080,6 +1144,17 @@ Twinkle.protect.callback.evaluate = function twinkleprotectCallbackEvaluate(e) {
 				case 'full-archief':
 					typename = 'volledige beveiliging';
 					break;
+				case 'extended-algemeen':
+				case 'extended-bwo':
+				case 'extended-vandalisme':
+				case 'extended-blp':
+				case 'extended-sokpop':
+				case 'extended-recent':
+				case 'extended-veelbezocht':
+				case 'extended-spam':
+				case 'extended-archief':
+					typename = 'uitgebreid bevestigde beveiliging';
+					break;
 				case 'semi-algemeen':
 				case 'semi-vandalisme':
 				case 'semi-blp':
@@ -1119,20 +1194,24 @@ Twinkle.protect.callback.evaluate = function twinkleprotectCallbackEvaluate(e) {
 			}
 			switch (input.category) {
 				case 'full-bwo':
+				case 'extended-bwo':
 				case 'move-bwo':
 					typereason = '[[WP:BWO|Bewerkingsoorlog]]';
 					break;
 				case 'full-vandalisme':
+				case 'extended-vandalisme':
 				case 'semi-vandalisme':
 				case 'move-vandalisme':
 					typereason = 'Voortdurend [[WP:Vandalisme|vandalisme]]';
 					break;
 				case 'full-spam':
+				case 'extended-spam':
 				case 'semi-spam':
 				case 'aanmaak-spam':
 					typereason = 'Herhaaldelijke expliciete reclame, werving, propaganda of zelfpromotie';
 					break;
 				case 'full-recent':
+				case 'extended-recent':
 				case 'semi-recent':
 					typereason = 'Naar aanleiding van actualiteiten en recente ontwikkelingen';
 					break;
@@ -1142,19 +1221,23 @@ Twinkle.protect.callback.evaluate = function twinkleprotectCallbackEvaluate(e) {
 				case 'aanmaak-heraanmaak':
 					typereason = 'Herhaaldelijk heraanmaken van verwijderde pagina';
 					break;
+				case 'extended-blp':
 				case 'semi-blp':
 				case 'aanmaak-blp':
 					typereason = 'Herhaaldelijke schending van richtlijn [[WP:BLP]]';
 					break;
+				case 'extended-sokpop':
 				case 'semi-sokpop':
 					typereason = 'Misbruik door sokpoppen';
 					break;
 				case 'full-veelbezocht':
+				case 'extended-veelbezocht':
 				case 'semi-veelbezocht':
 				case 'move-veelbezocht':
 					typereason = 'Preventieve beveiliging veelbezochte pagina';
 					break;
 				case 'full-archief':
+				case 'extended-archief':
 					typereason = 'Archiefpagina';
 					break;
 				case 'unprotection':

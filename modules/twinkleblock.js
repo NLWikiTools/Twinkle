@@ -882,7 +882,7 @@ Twinkle.block.blockPresetsInfo = {
 		pageParam: true,
 		reasonParam: false,
 		templateName: 'blok',
-		reason: '[[WP:Vandalisme|Vandalisme]]',
+		reason: '[[WP:Vandalisme|Herhaald vandalisme]]',
 		summary: 'Je bent tijdelijk geblokkeerd wegens herhaald vandalisme'
 	},
 	'ingelogde vandaal': {
