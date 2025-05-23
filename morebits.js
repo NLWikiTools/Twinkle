@@ -104,7 +104,7 @@ Morebits.userIsSysop = Morebits.userIsInGroup('sysop');
 	 * @returns {string}
 	 */
 Morebits.sanitizeIPv6 = function (address) {
-	console.warn('NOTE: Morebits.sanitizeIPv6 was renamed to Morebits.ip.sanitizeIPv6 in February 2021, please use that instead'); // eslint-disable-line no-console
+	console.warn('NOTE: Morebits.sanitizeIPv6 was renamed to Morebits.ip.sanitizeIPv6 in February 2021, please use that instead');  
 	return Morebits.ip.sanitizeIPv6(address);
 };
 
@@ -1364,10 +1364,10 @@ Morebits.ip = {
 	 */
 RegExp.escape = function(text, space_fix) {
 	if (space_fix) {
-		console.error('NOTE: RegExp.escape from Morebits was deprecated September 2020, please replace it with Morebits.string.escapeRegExp'); // eslint-disable-line no-console
+		console.error('NOTE: RegExp.escape from Morebits was deprecated September 2020, please replace it with Morebits.string.escapeRegExp');  
 		return Morebits.string.escapeRegExp(text);
 	}
-	console.error('NOTE: RegExp.escape from Morebits was deprecated September 2020, please replace it with mw.util.escapeRegExp'); // eslint-disable-line no-console
+	console.error('NOTE: RegExp.escape from Morebits was deprecated September 2020, please replace it with mw.util.escapeRegExp');  
 	return mw.util.escapeRegExp(text);
 };
 
@@ -2164,7 +2164,7 @@ Morebits.wiki = {};
 	 * @returns {boolean}
 	 */
 Morebits.wiki.isPageRedirect = function wikipediaIsPageRedirect() {
-	console.warn('NOTE: Morebits.wiki.isPageRedirect has been deprecated, use Morebits.isPageRedirect instead.'); // eslint-disable-line no-console
+	console.warn('NOTE: Morebits.wiki.isPageRedirect has been deprecated, use Morebits.isPageRedirect instead.');  
 	return Morebits.isPageRedirect();
 };
 
@@ -3205,7 +3205,7 @@ Morebits.wiki.page = function(pageName, status) {
 		 * accept a string value of `default`.
 		 */
 	this.setWatchlistFromPreferences = function(watchlistOption) {
-		console.warn('NOTE: Morebits.wiki.page.setWatchlistFromPreferences was deprecated December 2020, please use setWatchlist'); // eslint-disable-line no-console
+		console.warn('NOTE: Morebits.wiki.page.setWatchlistFromPreferences was deprecated December 2020, please use setWatchlist');  
 		if (watchlistOption) {
 			ctx.watchlistOption = 'preferences';
 		} else {
@@ -5276,7 +5276,7 @@ Morebits.status.prototype = {
 				}
 
 				// also log error messages in the browser console
-				console.error(this.textRaw + ': ' + this.statRaw); // eslint-disable-line no-console
+				console.error(this.textRaw + ': ' + this.statRaw);  
 			}
 		}
 		this.render();

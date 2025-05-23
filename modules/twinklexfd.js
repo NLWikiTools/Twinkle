@@ -456,7 +456,7 @@ Twinkle.xfd.callbacks = {
 				var pages = data.query.pages;
 				var pageId = Object.keys(pages)[0];
 
-				if (pageId === "-1") {
+				if (pageId === '-1') {
 					// Todo: use this to appent {{welkom}}
 					deferred.resolve();
 				}
@@ -521,10 +521,10 @@ Twinkle.xfd.callbacks = {
 				});
 			}
 		}).fail(function() {
-            // If the deferred was rejected (i.e., blocking template found), we do nothing further
-			console.log("Gadget-twinklexfd.js: Unexpected error during notification proces")
-            return;
-        });
+			// If the deferred was rejected (i.e., blocking template found), we do nothing further
+			// eslint-disable-next-line no-console
+			console.log('Gadget-twinklexfd.js: Unexpected error during notification proces');
+		});
 	},
 	addToLog: function(params, initialContrib) {
 		if (!Twinkle.getPref('logXfdNominations') || Twinkle.getPref('noLogOnXfdNomination').indexOf(params.venue) !== -1) {
