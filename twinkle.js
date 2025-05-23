@@ -199,34 +199,34 @@ Twinkle.getPref = function twinkleGetPref(name) {
 
 
 /**
-	 * **************** Twinkle.addPortlet() ****************
-	 *
-	 * Adds a portlet menu to one of the navigation areas on the page.
-	 * This is necessarily quite a hack since skins, navigation areas, and
-	 * portlet menu types all work slightly different.
-	 *
-	 * Available navigation areas depend on the skin used.
-	 * Vector:
-	 *  For each option, the outer nav class contains "vector-menu", the inner div class is "vector-menu-content", and the ul is "vector-menu-content-list"
-	 *  "mw-panel", outer nav class contains "vector-menu-portal". Existing portlets/elements: "p-logo", "p-navigation", "p-interaction", "p-tb", "p-coll-print_export"
-	 *  "left-navigation", outer nav class contains "vector-menu-tabs" or "vector-menu-dropdown". Existing portlets: "p-namespaces", "p-variants" (menu)
-	 *  "right-navigation", outer nav class contains "vector-menu-tabs" or "vector-menu-dropdown". Existing portlets: "p-views", "p-cactions" (menu), "p-search"
-	 *  Special layout of p-personal portlet (part of "head") through specialized styles.
-	 * Monobook:
-	 *  "column-one", outer nav class "portlet", inner div class "pBody". Existing portlets: "p-cactions", "p-personal", "p-logo", "p-navigation", "p-search", "p-interaction", "p-tb", "p-coll-print_export"
-	 *  Special layout of p-cactions and p-personal through specialized styles.
-	 * Modern:
-	 *  "mw_contentwrapper" (top nav), outer nav class "portlet", inner div class "pBody". Existing portlets or elements: "p-cactions", "mw_content"
-	 *  "mw_portlets" (sidebar), outer nav class "portlet", inner div class "pBody". Existing portlets: "p-navigation", "p-search", "p-interaction", "p-tb", "p-coll-print_export"
-	 *
-	 * @param {String} navigation id of the target navigation area (skin dependant, on vector either of "left-navigation", "right-navigation", or "mw-panel")
-	 * @param {String} id id of the portlet menu to create, preferably start with "p-".
-	 * @param {String} text name of the portlet menu to create. Visibility depends on the class used.
-	 * @param {String} type type of portlet. Currently only used for the vector non-sidebar portlets, pass "menu" to make this portlet a drop down menu.
-	 * @param {Node} nextnodeid the id of the node before which the new item should be added, should be another item in the same list, or undefined to place it at the end.
-	 *
-	 * @return Node -- the DOM node of the new item (a DIV element) or null
-	 */
+ * **************** Twinkle.addPortlet() ****************
+ *
+ * Adds a portlet menu to one of the navigation areas on the page.
+ * This is necessarily quite a hack since skins, navigation areas, and
+ * portlet menu types all work slightly different.
+ *
+ * Available navigation areas depend on the skin used.
+ * Vector:
+ *  For each option, the outer nav class contains "vector-menu", the inner div class is "vector-menu-content", and the ul is "vector-menu-content-list"
+ *  "mw-panel", outer nav class contains "vector-menu-portal". Existing portlets/elements: "p-logo", "p-navigation", "p-interaction", "p-tb", "p-coll-print_export"
+ *  "left-navigation", outer nav class contains "vector-menu-tabs" or "vector-menu-dropdown". Existing portlets: "p-namespaces", "p-variants" (menu)
+ *  "right-navigation", outer nav class contains "vector-menu-tabs" or "vector-menu-dropdown". Existing portlets: "p-views", "p-cactions" (menu), "p-search"
+ *  Special layout of p-personal portlet (part of "head") through specialized styles.
+ * Monobook:
+ *  "column-one", outer nav class "portlet", inner div class "pBody". Existing portlets: "p-cactions", "p-personal", "p-logo", "p-navigation", "p-search", "p-interaction", "p-tb", "p-coll-print_export"
+ *  Special layout of p-cactions and p-personal through specialized styles.
+ * Modern:
+ *  "mw_contentwrapper" (top nav), outer nav class "portlet", inner div class "pBody". Existing portlets or elements: "p-cactions", "mw_content"
+ *  "mw_portlets" (sidebar), outer nav class "portlet", inner div class "pBody". Existing portlets: "p-navigation", "p-search", "p-interaction", "p-tb", "p-coll-print_export"
+ *
+ * @param {String} navigation id of the target navigation area (skin dependant, on vector either of "left-navigation", "right-navigation", or "mw-panel")
+ * @param {String} id id of the portlet menu to create, preferably start with "p-".
+ * @param {String} text name of the portlet menu to create. Visibility depends on the class used.
+ * @param {String} type type of portlet. Currently only used for the vector non-sidebar portlets, pass "menu" to make this portlet a drop down menu.
+ * @param {Node} nextnodeid the id of the node before which the new item should be added, should be another item in the same list, or undefined to place it at the end.
+ *
+ * @return Node -- the DOM node of the new item (a DIV element) or null
+ */
 Twinkle.addPortlet = function(navigation, id, text, type, nextnodeid) {
 	// sanity checks, and get required DOM nodes
 	var root = document.getElementById(navigation) || document.querySelector(navigation);
