@@ -1,12 +1,15 @@
 {
-	"plugins": ["es5"],
-	"extends": ["eslint:recommended", "plugin:es5/no-es2015"],
-	"root": true,
-	"env": {
-		"browser": true,
-		"jquery": true
-	},
-	"globals": {
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jquery": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2015,
+    "sourceType": "script"
+  },
+  "globals": {
 		"mw": "readonly",
 		"Map": "readonly"
 	},
