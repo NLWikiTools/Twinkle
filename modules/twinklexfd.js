@@ -234,15 +234,15 @@ Twinkle.xfd.callback.change_category = function twinklexfdCallbackChangeCategory
 
 			var sjabloon_select = work_area.append({
 				type: 'select',
-				label: 'Sjabloon:',
+				label: 'Nominatie categorie:',
 				name: 'sjabloon'
 			});
-			sjabloon_select.append({ type: 'option', label: '{{verwijderen}} Algemene nominatie', value: 'verwijderen', selected: true });
-			sjabloon_select.append({ type: 'option', label: '{{wiu}} Werk in uitvoering', value: 'wiu'});
-			sjabloon_select.append({ type: 'option', label: '{{ne}} Niet encyclopedisch', value: 'ne' });
-			sjabloon_select.append({ type: 'option', label: '{{wb}} Woordenboekdefinitie', value: 'wb' });
-			sjabloon_select.append({ type: 'option', label: '{{reclame}} Promotionele uiting', value: 'reclame' });
-			sjabloon_select.append({ type: 'option', label: '{{auteur}} Schending auteursrechten', value: 'auteur' });
+			sjabloon_select.append({ type: 'option', label: 'Algemene nominatie', value: 'verwijderen', selected: true });
+			sjabloon_select.append({ type: 'option', label: 'Werk in uitvoering', value: 'wiu'});
+			sjabloon_select.append({ type: 'option', label: 'Niet encyclopedisch', value: 'ne' });
+			sjabloon_select.append({ type: 'option', label: 'Woordenboekdefinitie', value: 'wb' });
+			sjabloon_select.append({ type: 'option', label: 'Promotionele uiting', value: 'reclame' });
+			sjabloon_select.append({ type: 'option', label: 'Schending auteursrechten', value: 'auteur' });
 
 			if ((mw.config.get('wgNamespaceNumber') === 2 /* Gebruiker: */ || mw.config.get('wgNamespaceNumber') === 3 /* Overleg gebruiker: */) && mw.config.exists('wgRelevantUserName')) {
 				work_area.append({
@@ -430,6 +430,9 @@ Twinkle.xfd.callbacks = {
 		var targetNS = notifyTarget.getNamespaceId();
 		var usernameOrTarget = notifyTarget.getRelativeText(3);
 		notifyTarget = notifyTarget.toText();
+
+		var deferred = $.Deferred();
+
 		if (targetNS === 3) {
 			// Disallow warning yourself
 			if (usernameOrTarget === mw.config.get('wgUserName')) {
@@ -440,43 +443,88 @@ Twinkle.xfd.callbacks = {
 				Twinkle.xfd.callbacks.addToLog(params, null);
 				return;
 			}
+
+			// Check if a nobots is present on the user talk page
+			var api = new mw.Api();
+			api.get({
+				format: 'json',
+				action: 'query',
+				prop: 'revisions',
+				titles: 'Overleg gebruiker:' + usernameOrTarget,
+				rvprop: 'content'
+			}).done(function (data) {
+				var pages = data.query.pages;
+				var pageId = Object.keys(pages)[0];
+
+				if (pageId === "-1") {
+					// Todo: use this to appent {{welkom}}
+					deferred.resolve();
+				}
+
+				var pageContent = pages[pageId].revisions[0]['*'];
+
+				if (pageContent) {
+					var hasNoBots = pageContent.includes('{{nobots}}');
+					var hasBotsAllowNone = pageContent.includes('{{bots|allow=none}}');
+					var hasBotsDenyAll = pageContent.includes('{{bots|deny=all}}');
+					var hasBotsDenyTwinkle = /{{bots\|deny=.*twinkle.*}}/i.test(pageContent);
+
+					if (hasNoBots || hasBotsAllowNone || hasBotsDenyAll || hasBotsDenyTwinkle) {
+						Morebits.status.warn('Notificatie overgeslagen omdat ' + usernameOrTarget + ' meldingen heeft uitgezet middels {{nobots}}');
+						Twinkle.xfd.callbacks.addToLog(params, null);
+						deferred.reject();
+						return;
+					}
+				}
+				deferred.resolve();
+			}).fail(function() {
+				deferred.resolve();
+			});
 			// Default is notifying the initial contributor, but MfD also
 			// notifies userspace page owner
 			actionName = actionName || 'Verwittig originele aanmaker (' + usernameOrTarget + ')';
-		}
-
-
-		var notifytext = '\n== Beoordelingsnominatie van ' + Morebits.pageNameNorm + ' ==';
-		notifytext += '\n{{subst:vvn|1=' + Morebits.pageNameNorm;
-		notifytext += '|2={{subst:LOCALYEAR}}|3={{subst:LOCALMONTH}}|4={{subst:LOCALDAY2}}';
-		notifytext += '|5=' + params.reason + '}} Met vriendelijke groet, ~~~~';
-
-		// Link to the venue; object used here rather than repetitive items in switch
-		var editSummary = 'Mededeling: Nominatie van [[' + Morebits.pageNameNorm + ']] op [[' + params.discussionpage + ']].';
-
-		var usertalkpage = new Morebits.wiki.page(notifyTarget, actionName);
-		usertalkpage.setAppendText(notifytext);
-		usertalkpage.setEditSummary(editSummary);
-		usertalkpage.setChangeTags(Twinkle.changeTags);
-		usertalkpage.setCreateOption('recreate');
-		usertalkpage.setWatchlist(Twinkle.getPref('xfdWatchUser'));
-		usertalkpage.setFollowRedirect(true, false);
-
-		if (noLog) {
-			usertalkpage.append();
 		} else {
-			usertalkpage.append(function onNotifySuccess() {
-				// Don't treat RfD target or MfD userspace owner as initialContrib in log
-				if (!params.notifycreator) {
-					notifyTarget = null;
-				}
-				// add this nomination to the user's userspace log
-				Twinkle.xfd.callbacks.addToLog(params, usernameOrTarget);
-			}, function onNotifyError() {
-				// if user could not be notified, log nomination without mentioning that notification was sent
-				Twinkle.xfd.callbacks.addToLog(params, null);
-			});
+			// If targetNS is not 3, resolve the deferred immediately
+			deferred.resolve();
 		}
+
+		$.when(deferred).done(function() {
+			var notifytext = '\n== Beoordelingsnominatie van ' + Morebits.pageNameNorm + ' ==';
+			notifytext += '\n{{subst:vvn|1=' + Morebits.pageNameNorm;
+			notifytext += '|2={{subst:LOCALYEAR}}|3={{subst:LOCALMONTH}}|4={{subst:LOCALDAY2}}';
+			notifytext += '|5=' + params.reason + '}} Met vriendelijke groet, ~~~~';
+
+			// Link to the venue; object used here rather than repetitive items in switch
+			var editSummary = 'Mededeling: Nominatie van [[' + Morebits.pageNameNorm + ']] op [[' + params.discussionpage + ']].';
+
+			var usertalkpage = new Morebits.wiki.page(notifyTarget, actionName);
+			usertalkpage.setAppendText(notifytext);
+			usertalkpage.setEditSummary(editSummary);
+			usertalkpage.setChangeTags(Twinkle.changeTags);
+			usertalkpage.setCreateOption('recreate');
+			usertalkpage.setWatchlist(Twinkle.getPref('xfdWatchUser'));
+			usertalkpage.setFollowRedirect(true, false);
+
+			if (noLog) {
+				usertalkpage.append();
+			} else {
+				usertalkpage.append(function onNotifySuccess() {
+					// Don't treat RfD target or MfD userspace owner as initialContrib in log
+					if (!params.notifycreator) {
+						notifyTarget = null;
+					}
+					// add this nomination to the user's userspace log
+					Twinkle.xfd.callbacks.addToLog(params, usernameOrTarget);
+				}, function onNotifyError() {
+					// if user could not be notified, log nomination without mentioning that notification was sent
+					Twinkle.xfd.callbacks.addToLog(params, null);
+				});
+			}
+		}).fail(function() {
+            // If the deferred was rejected (i.e., blocking template found), we do nothing further
+			console.log("Gadget-twinklexfd.js: Unexpected error during notification proces")
+            return;
+        });
 	},
 	addToLog: function(params, initialContrib) {
 		if (!Twinkle.getPref('logXfdNominations') || Twinkle.getPref('noLogOnXfdNomination').indexOf(params.venue) !== -1) {
@@ -560,7 +608,7 @@ Twinkle.xfd.callbacks = {
 			}
 
 			// Check for existing AfD tag, for the benefit of new page patrollers
-			var textNoAfd = text.replace(/{{\s*(wiu|ne|wb|auteur|reclame|weg|verwijderen)(?:\s*\||\s*}})/ig, '');
+			var textNoAfd = text.replace(/{{\s*(wiu|ne|wb|auteur|reclame|weg|weg2|verwijderen)(?:\s*\||\s*}})/ig, '');
 			if (text !== textNoAfd) {
 				if (confirm('Een TBP sjabloon is al gevonden op dit artikel. Misschien was iemand sneller.  \nKlik op OK om de nominatie te vervangen met jouw nominatie (niet verstandig), of Cancel om je nominatie af te breken.')) {
 					text = textNoAfd;
@@ -597,7 +645,7 @@ Twinkle.xfd.callbacks = {
 				Twinkle.xfd.callbacks.addToLog(params, null);
 			}
 
-			params.tagText = '{{' + params.sjabloon + '|1=' + params.reason + '|2={{subst:LOCALYEAR}}|3={{subst:LOCALMONTH}}|4={{subst:LOCALDAY2}}}}\n';
+			params.tagText = '{{verwijderen|2={{subst:LOCALYEAR}}|3={{subst:LOCALMONTH}}|4={{subst:LOCALDAY2}}}}\n';
 
 			if (pageobj.canEdit()) {
 				// Remove some tags that should always be removed on AfD.

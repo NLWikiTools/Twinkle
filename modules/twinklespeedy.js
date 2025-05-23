@@ -476,7 +476,7 @@ Twinkle.speedy.generalList = [
 		value: 'vertaling'
 	},
 	{
-		label: 'Reclame',
+		label: 'Expliciete reclame',
 		value: 'reclame'
 	},
 	{

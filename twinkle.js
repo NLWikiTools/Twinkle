@@ -34,24 +34,24 @@ window.Twinkle = Twinkle;  // allow global access
 
 Twinkle.initCallbacks = [];
 /**
- * Adds a callback to execute when Twinkle has loaded.
- * @param {function} func
- * @param {string} [name] - name of module used to check if is disabled.
- * If name is not given, module is loaded unconditionally.
- */
+	 * Adds a callback to execute when Twinkle has loaded.
+	 * @param {function} func
+	 * @param {string} [name] - name of module used to check if is disabled.
+	 * If name is not given, module is loaded unconditionally.
+	 */
 Twinkle.addInitCallback = function twinkleAddInitCallback(func, name) {
 	Twinkle.initCallbacks.push({ func: func, name: name });
 };
 
 Twinkle.defaultConfig = {};
 /**
- * This holds the default set of preferences used by Twinkle.
- * It is important that all new preferences added here, especially admin-only ones, are also added to
- * |Twinkle.config.sections| in twinkleconfig.js, so they are configurable via the Twinkle preferences panel.
- * For help on the actual preferences, see the comments in twinkleconfig.js.
- *
- * Formerly Twinkle.defaultConfig.twinkle and Twinkle.defaultConfig.friendly
- */
+	 * This holds the default set of preferences used by Twinkle.
+	 * It is important that all new preferences added here, especially admin-only ones, are also added to
+	 * |Twinkle.config.sections| in twinkleconfig.js, so they are configurable via the Twinkle preferences panel.
+	 * For help on the actual preferences, see the comments in twinkleconfig.js.
+	 *
+	 * Formerly Twinkle.defaultConfig.twinkle and Twinkle.defaultConfig.friendly
+	 */
 Twinkle.defaultConfig = {
 	// General
 	userTalkPageMode: 'tab',
@@ -353,13 +353,13 @@ Twinkle.addPortlet = function(navigation, id, text, type, nextnodeid) {
 
 
 /**
- * **************** Twinkle.addPortletLink() ****************
- * Builds a portlet menu if it doesn't exist yet, and add the portlet link.
- * @param task: Either a URL for the portlet link or a function to execute.
- * @param text:
- * @param id:
- * @param tooltip:
- */
+	 * **************** Twinkle.addPortletLink() ****************
+	 * Builds a portlet menu if it doesn't exist yet, and add the portlet link.
+	 * @param task: Either a URL for the portlet link or a function to execute.
+	 * @param text:
+	 * @param id:
+	 * @param tooltip:
+	 */
 Twinkle.addPortletLink = function(task, text, id, tooltip) {
 	if (Twinkle.getPref('portletArea') !== null) {
 		Twinkle.addPortlet(Twinkle.getPref('portletArea'), Twinkle.getPref('portletId'), Twinkle.getPref('portletName'), Twinkle.getPref('portletType'), Twinkle.getPref('portletNext'));
@@ -380,8 +380,8 @@ Twinkle.addPortletLink = function(task, text, id, tooltip) {
 
 
 /**
- * **************** General initialization code ****************
- */
+	 * **************** General initialization code ****************
+	 */
 
 var scriptpathbefore = mw.util.wikiScript('index') + '?title=',
 	scriptpathafter = '&action=raw&ctype=text/javascript&happy=yes';
@@ -439,7 +439,7 @@ Twinkle.load = function () {
 		activeSpecialPageList = activeSpecialPageList.concat([ 'DeletedContributions', 'Prefixindex' ]);
 	}
 	if (mw.config.get('wgNamespaceNumber') === -1 &&
-		activeSpecialPageList.indexOf(mw.config.get('wgCanonicalSpecialPageName')) === -1) {
+			activeSpecialPageList.indexOf(mw.config.get('wgCanonicalSpecialPageName')) === -1) {
 		return;
 	}
 
@@ -468,7 +468,7 @@ Twinkle.load = function () {
 	// Increases text size in Twinkle dialogs, if so configured
 	if (Twinkle.getPref('dialogLargeFont')) {
 		mw.util.addCSS('.morebits-dialog-content, .morebits-dialog-footerlinks { font-size: 100% !important; } ' +
-			'.morebits-dialog input, .morebits-dialog select, .morebits-dialog-content button { font-size: inherit !important; }');
+				'.morebits-dialog input, .morebits-dialog select, .morebits-dialog-content button { font-size: inherit !important; }');
 	}
 
 	// Hide the lingering space if the TW menu is empty
@@ -480,9 +480,9 @@ Twinkle.load = function () {
 
 
 /**
- * Twinkle-specific data shared by multiple modules
- * Likely customized per installation
- */
+	 * Twinkle-specific data shared by multiple modules
+	 * Likely customized per installation
+	 */
 
 // Custom change tag(s) to be applied to all Twinkle actions, create at Special:Tags
 Twinkle.changeTags = 'twinkle';
