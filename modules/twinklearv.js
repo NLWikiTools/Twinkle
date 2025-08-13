@@ -26,19 +26,24 @@ Twinkle.arv = function twinklearv() {
 		return;
 	}
 
+	var isTA = mw.util.isTemporaryUser(username);
 	var isIP = mw.util.isIPAddress(username, true);
 	// Ignore ranges wider than the CIDR limit
 	if (Morebits.ip.isRange(username) && !Morebits.ip.validCIDR(username)) {
 		return;
 	}
-	var userType = isIP ? 'IP' + (Morebits.ip.isRange(username) ? ' subnet' : '') : 'gebruiker';
+	var userType = isIP
+		? "IP" + (Morebits.ip.isRange(username) ? " subnet" : "")
+		: isTA
+		? "tijdelijk account"
+		: "gebruiker";
 
 	Twinkle.addPortletLink(function() {
-		Twinkle.arv.callback(username, isIP);
+		Twinkle.arv.callback(username, isIP, isTA);
 	}, 'Rapporteer', 'tw-arv', 'Rapporteer ' + userType);
 };
 
-Twinkle.arv.callback = function (uid, isIP) {
+Twinkle.arv.callback = function (uid, isIP, isTA) {
 	var Window = new Morebits.simpleWindow(600, 500);
 	Window.setTitle('Rapporteer gebruiker');
 	Window.setScriptName('Twinkle');
@@ -51,24 +56,24 @@ Twinkle.arv.callback = function (uid, isIP) {
 	var categories = form.append({
 		type: 'select',
 		name: 'category',
-		label: 'Selecteer locatie van rapporteren: ',
+		label: 'Selecteer type melding: ',
 		event: Twinkle.arv.callback.changeCategory
 	});
 	categories.append({
-		type: 'option',
-		label: 'WP:Regblok',
-		value: 'regblok',
-		disabled: isIP
+		type: "option",
+		label: "Geregistreerde gebruiker",
+		value: "regblok",
+		disabled: isTA || isIP,
+	});
+	categories.append({
+		type: "option",
+		label: "Anonieme gebruiker",
+		value: "ipblok",
+		disabled: !(isTA || isIP),
 	});
 	categories.append({
 		type: 'option',
-		label: 'WP:IPBlok',
-		value: 'ipblok',
-		disabled: !isIP
-	});
-	categories.append({
-		type: 'option',
-		label: 'WP:Sokpop',
+		label: 'Sokpop',
 		value: 'sokpop'
 	});
 
@@ -166,6 +171,14 @@ Twinkle.arv.callback.changeCategory = function (e) {
 					{
 						label: 'Spambot',
 						value: 'spambot'
+					},
+					{
+						label: 'Intermenselijk wangedrag',
+						value: 'aanval'
+					},
+					{
+						label: 'Leesblok/Afkoelblok',
+						value: "leesblok"
 					}
 				]
 			});
@@ -181,30 +194,34 @@ Twinkle.arv.callback.changeCategory = function (e) {
 		case 'ipblok':
 			work_area = new Morebits.quickForm.element({
 				type: 'field',
-				label: 'Rapporteer IP gebruiker',
+				label: 'Rapporteer anonieme gebruiker',
 				name: 'work_area'
 			});
 			work_area.append({
-				type: 'checkbox',
-				name: 'arvtype',
+				type: "checkbox",
+				name: "arvtype",
 				list: [
 					{
-						label: 'Doorgaand vandalisme na uitdelen laatste waarschuwing',
-						value: 'final'
+						label: "Doorgaand vandalisme na uitdelen laatste waarschuwing",
+						value: "final",
 					},
 					{
-						label: 'Doorgaand vandalisme na zeer recente blokkade',
-						value: 'postblock'
+						label: "Doorgaand vandalisme na zeer recente blokkade",
+						value: "postblock",
 					},
 					{
-						label: 'Crosswiki vandaal',
-						value: 'crosswiki'
+						label: "Crosswiki vandaal",
+						value: "crosswiki",
 					},
 					{
-						label: 'Spambot',
-						value: 'spambot'
+						label: "Spambot",
+						value: "spambot",
+					},
+					{
+						label: "Intermenselijk wangedrag",
+						value: "aanval",
 					}
-				]
+				],
 			});
 			work_area.append({
 				type: 'textarea',
@@ -277,18 +294,22 @@ Twinkle.arv.callback.evaluate = function(e) {
 
 			types = types.map(function(v) {
 				switch (v) {
-					case 'final':
-						return 'herhaald vandalisme';
-					case 'postblock':
-						return 'doorgaand vandalisme na recente blokkade';
-					case 'og':
-						return 'ongewenste gebruikersnaam';
-					case 'crosswiki':
-						return 'crosswiki vandaal';
-					case 'spambot':
-						return 'spambot';
+					case "final":
+						return "herhaald vandalisme";
+					case "postblock":
+						return "doorgaand vandalisme na recente blokkade";
+					case "og":
+						return "ongewenste gebruikersnaam";
+					case "crosswiki":
+						return "crosswiki vandaal";
+					case "spambot":
+						return "spambot";
+					case "aanval":
+						return "intermenselijk wangedrag";
+					case "leesblok":
+						return "leesblok/afkoelblok";
 					default:
-						return 'geen reden opgegeven';
+						return "geen reden opgegeven";
 				}
 			}).join('; ');
 
@@ -338,16 +359,18 @@ Twinkle.arv.callback.evaluate = function(e) {
 
 			types = types.map(function(v) {
 				switch (v) {
-					case 'final':
-						return 'herhaald vandalisme';
-					case 'postblock':
-						return 'doorgaand vandalisme na recente blokkade';
-					case 'crosswiki':
-						return 'crosswiki vandaal';
-					case 'spambot':
-						return 'spambot';
+					case "final":
+						return "herhaald vandalisme";
+					case "postblock":
+						return "doorgaand vandalisme na recente blokkade";
+					case "crosswiki":
+						return "crosswiki vandaal";
+					case "spambot":
+						return "spambot";
+					case "aanval":
+						return "intermenselijk wangedrag";
 					default:
-						return 'geen reden opgegeven';
+						return "geen reden opgegeven";
 				}
 			}).join('; ');
 
