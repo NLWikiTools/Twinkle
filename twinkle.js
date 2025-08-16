@@ -149,7 +149,7 @@ Twinkle.defaultConfig = {
 	watchWelcomes: '3 months',
 	insertUsername: true,
 	quickWelcomeMode: 'norm',
-	quickWelcomeTemplate: 'hola',
+	quickWelcomeTemplate: 'salut',
 	customWelcomeList: [],
 	customWelcomeSignature: true,
 

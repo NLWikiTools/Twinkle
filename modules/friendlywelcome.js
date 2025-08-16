@@ -132,7 +132,15 @@
 		) {
 			Twinkle.addPortletLink(
 				function () {
-					Twinkle.welcome.callback(mw.config.get("wgRelevantUserName"));
+					var talkPageUrl = mw.util.getUrl(
+						"Overleg_gebruiker:" + mw.config.get("wgRelevantUserName")
+					);
+					if (Twinkle.getPref("quickWelcomeMode") === "auto") {
+						talkPageUrl +=
+							(talkPageUrl.indexOf("?") === -1 ? "?" : "&") +
+							"friendlywelcome=auto";
+					}
+					window.location.href = talkPageUrl; 
 				},
 				"Welkom",
 				"friendly-welcome",
