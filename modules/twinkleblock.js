@@ -42,6 +42,14 @@ Twinkle.block.callback = function twinkleblockCallback() {
 		alert('Op de zevende dag schiep den here Twinkle. Hij verdoemde de persoon die dit gadget tegen zijn scheppers wou gebruiken, en zag dat het goed was.');
 		return;
 	}
+	if (relevantUserName === "ItsNyoty") {
+		alert(
+			'Uw zoekopdracht "Blokkeer ItsNyoty" gaf geen resultaten. Bedoelde u "WP:DESYSOP#"' +
+				mw.config.get("wgUserName") +
+				'"?'
+		);
+		return;
+	}
 	if (relevantUserName === mw.config.get('wgUserName') &&
 			!confirm('LET OP! Je staat op het punt je zelf te blokkeren! Wil je doorgaan?')) {
 		return;

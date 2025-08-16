@@ -54,13 +54,13 @@ Twinkle.defaultConfig = {};
 	 */
 Twinkle.defaultConfig = {
 	// General
-	userTalkPageMode: 'tab',
+	userTalkPageMode: "tab",
 	dialogLargeFont: false,
 	disabledModules: [],
 	disabledSysopModules: [],
 
 	// ARV
-	spiWatchReport: 'yes',
+	spiWatchReport: "yes",
 
 	// Block
 	defaultToBlock64: true,
@@ -69,26 +69,59 @@ Twinkle.defaultConfig = {
 
 	// Fluff (revert and rollback)
 	autoMenuAfterRollback: true,
-	openTalkPage: [ 'norm', 'vand' ],
+	openTalkPage: ["norm", "vand"],
 	openTalkPageOnAutoRevert: false,
 	rollbackInPlace: false,
-	markRevertedPagesAsMinor: [ 'vand' ],
-	watchRevertedPages: [ 'norm', 'vand', 'torev' ],
-	watchRevertedExpiry: '1 month',
+	markRevertedPagesAsMinor: ["vand"],
+	watchRevertedPages: ["norm", "vand", "torev"],
+	watchRevertedExpiry: "1 month",
 	offerReasonOnNormalRevert: true,
 	confirmOnFluff: false,
 	confirmOnMobileFluff: true,
-	showRollbackLinks: [ 'diff', 'others', 'recent', 'history' ],
+	showRollbackLinks: ["diff", "others", "recent", "history"],
 
 	// CSD
-	speedySelectionStyle: 'buttonClick',
+	speedySelectionStyle: "buttonClick",
 	watchSpeedyPages: [],
-	watchSpeedyExpiry: '1 month',
+	watchSpeedyExpiry: "1 month",
 	markSpeedyPagesAsPatrolled: true,
-	watchSpeedyUser: '1 month',
-	welcomeUserOnSpeedyDeletionNotification: [ 'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'g9', 'u2' ],
-	notifyUserOnSpeedyDeletionNomination: [ 'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'g9', 'u2' ],
-	warnUserOnSpeedyDelete: [ 'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'g9', 'u2' ],
+	watchSpeedyUser: "1 month",
+	welcomeUserOnSpeedyDeletionNotification: [
+		"g1",
+		"g2",
+		"g3",
+		"g4",
+		"g5",
+		"g6",
+		"g7",
+		"g8",
+		"g9",
+		"u2",
+	],
+	notifyUserOnSpeedyDeletionNomination: [
+		"g1",
+		"g2",
+		"g3",
+		"g4",
+		"g5",
+		"g6",
+		"g7",
+		"g8",
+		"g9",
+		"u2",
+	],
+	warnUserOnSpeedyDelete: [
+		"g1",
+		"g2",
+		"g3",
+		"g4",
+		"g5",
+		"g6",
+		"g7",
+		"g8",
+		"g9",
+		"u2",
+	],
 	promptForSpeedyDeletionSummary: [],
 	deleteTalkPageOnDelete: true,
 	deleteRedirectsOnDelete: true,
@@ -96,28 +129,28 @@ Twinkle.defaultConfig = {
 	speedyWindowHeight: 500,
 	speedyWindowWidth: 800,
 	logSpeedyNominations: false,
-	speedyLogPageName: 'nuweg logboek',
-	noLogOnSpeedyNomination: [ 'u1' ],
+	speedyLogPageName: "nuweg logboek",
+	noLogOnSpeedyNomination: ["u1"],
 
 	// Unlink
-	unlinkNamespaces: [ '0', '10', '100' ],
+	unlinkNamespaces: ["0", "10", "100"],
 
 	// Warn
-	defaultWarningGroup: '1',
+	defaultWarningGroup: "1",
 	showSharedIPNotice: false,
-	watchWarnings: '1 month',
+	watchWarnings: "1 month",
 	oldSelect: false,
 	customWarningList: [],
 
 	// XfD
 	logXfdNominations: false,
-	xfdLogPageName: 'TBx logboek',
+	xfdLogPageName: "TBx logboek",
 	noLogOnXfdNomination: [],
-	xfdWatchDiscussion: 'default',
-	xfdWatchList: 'no',
-	xfdWatchPage: '1 month',
-	xfdWatchUser: '1 month',
-	xfdWatchRelated: '1 month',
+	xfdWatchDiscussion: "default",
+	xfdWatchList: "no",
+	xfdWatchPage: "1 month",
+	xfdWatchUser: "1 month",
+	xfdWatchRelated: "1 month",
 	markXfdPagesAsPatrolled: true,
 
 	// Hidden preferences
@@ -127,34 +160,34 @@ Twinkle.defaultConfig = {
 	batchChunks: 50,
 
 	// Deprecated options, as a fallback for add-on scripts/modules
-	summaryAd: ' ([[WP:TW|Twinkle]])',
-	deletionSummaryAd: ' ([[WP:TW|Twinkle]])',
-	protectionSummaryAd: ' ([[WP:TW|Twinkle]])',
+	summaryAd: " ([[WP:TW|Twinkle]])",
+	deletionSummaryAd: " ([[WP:TW|Twinkle]])",
+	protectionSummaryAd: " ([[WP:TW|Twinkle]])",
 
 	// Formerly defaultConfig.friendly:
 	// Tag
 	groupByDefault: false,
-	watchTaggedVenues: ['articles'],
-	watchTaggedPages: '1 month',
-	watchMergeDiscussions: '1 month',
+	watchTaggedVenues: ["articles"],
+	watchTaggedPages: "1 month",
+	watchMergeDiscussions: "1 month",
 	markTaggedPagesAsMinor: false,
 	markTaggedPagesAsPatrolled: true,
-	tagArticleSortOrder: 'cat',
+	tagArticleSortOrder: "cat",
 	customTagList: [],
 	customFileTagList: [],
 	customRedirectTagList: [],
 
 	// Welcome
 	topWelcomes: true,
-	watchWelcomes: '3 months',
+	watchWelcomes: "3 months",
 	insertUsername: true,
-	quickWelcomeMode: 'norm',
-	quickWelcomeTemplate: 'salut',
+	quickWelcomeMode: "norm",
+	quickWelcomeTemplate: "subst:Salut",
 	customWelcomeList: [],
 	customWelcomeSignature: true,
 
 	// Shared
-	markSharedIPAsMinor: true
+	markSharedIPAsMinor: true,
 };
 
 // now some skin dependent config.

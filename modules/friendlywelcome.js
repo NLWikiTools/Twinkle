@@ -23,7 +23,15 @@
 	Twinkle.welcome = function friendlywelcome() {
 		if (mw.util.getParamValue("friendlywelcome")) {
 			if (mw.util.getParamValue("friendlywelcome") === "auto") {
-				Twinkle.welcome.auto();
+				if (mw.config.get("wgRelevantUserName") === mw.config.get("wgUserName")){
+					alert(
+						"Is het niet een beetje sneu om jezelf welkom te gaan heten?"
+					);
+					return;
+				}
+				else {
+					Twinkle.welcome.auto();
+				}
 			} else {
 				Twinkle.welcome.semiauto();
 			}
@@ -33,8 +41,12 @@
 	};
 
 	Twinkle.welcome.auto = function () {
-		if (mw.util.getParamValue("action") !== "edit") {
+		// Use wgArticleId to check if the page exists
+		if (mw.config.get("wgArticleId") !== 0) {
 			// userpage not empty, aborting auto-welcome
+			console.log(
+				"Overlegpagina bestaat, automatische verwelkoming afgebroken"
+			);
 			return;
 		}
 
@@ -52,16 +64,16 @@
 			const $oldDiffUsernameLine = $("#mw-diff-otitle2");
 			const $newDiffUsernameLine = $("#mw-diff-ntitle2");
 			const $oldDiffHasRedlinkedTalkPage = $oldDiffUsernameLine
-				.find("span.mw-usertoollinks a.new:contains(talk)")
+				.find("span.mw-usertoollinks a.new:contains(overleg)")
 				.first();
 			const $newDiffHasRedlinkedTalkPage = $newDiffUsernameLine
-				.find("span.mw-usertoollinks a.new:contains(talk)")
+				.find("span.mw-usertoollinks a.new:contains(overleg)")
 				.first();
 
-			const diffHasRedlinkedTalkPage =
+			if (
 				$oldDiffHasRedlinkedTalkPage.length > 0 ||
-				$newDiffHasRedlinkedTalkPage.length > 0;
-			if (diffHasRedlinkedTalkPage) {
+				$newDiffHasRedlinkedTalkPage.length > 0
+			) {
 				const spanTag = function (color, content) {
 					const span = document.createElement("span");
 					span.style.color = color;
@@ -83,7 +95,7 @@
 					oWelcomeNode.firstChild.setAttribute(
 						"href",
 						oHref +
-							"&" +
+							(oHref.indexOf("?") === -1 ? "?" : "&") +
 							$.param({
 								friendlywelcome:
 									Twinkle.getPref("quickWelcomeMode") === "auto"
@@ -107,7 +119,7 @@
 					nWelcomeNode.firstChild.setAttribute(
 						"href",
 						nHref +
-							"&" +
+							(nHref.indexOf("?") === -1 ? "?" : "&") +
 							$.param({
 								friendlywelcome:
 									Twinkle.getPref("quickWelcomeMode") === "auto"
@@ -139,8 +151,10 @@
 						talkPageUrl +=
 							(talkPageUrl.indexOf("?") === -1 ? "?" : "&") +
 							"friendlywelcome=auto";
+						window.location.href = talkPageUrl;
+					} else {
+						Twinkle.welcome.callback(mw.config.get("wgRelevantUserName"));
 					}
-					window.location.href = talkPageUrl; 
 				},
 				"Welkom",
 				"friendly-welcome",
@@ -150,12 +164,12 @@
 	};
 
 	Twinkle.welcome.welcomeUser = function welcomeUser() {
-		Morebits.Status.init(document.getElementById("mw-content-text"));
+		Morebits.status.init(document.getElementById("mw-content-text"));
 		$("#catlinks").remove();
 
 		var params = {
 			template: Twinkle.getPref("quickWelcomeTemplate"),
-			article: Twinkle.getPrefill("vanarticle") || "",
+			article: mw.util.getParamValue("vanarticle") || "",
 			mode: "auto",
 		};
 
@@ -317,7 +331,8 @@
 			"Standaard verwelkoming": {
 				hola: {
 					description: "Standaard verwelkoming",
-					syntax: "{{hola|gebruiker|~~~~}}",
+					syntax:
+						"{{hola|gebruiker|~~~~}}",
 				},
 				salut: {
 					description:
@@ -331,11 +346,13 @@
 				},
 				welkom2: {
 					description: "Een alternatief voor {{hola}}",
-					syntax: "{{welkom2|~~~~}}",
+					syntax:
+						"{{welkom2|~~~~}}",
 				},
 				welkom3: {
 					description: "Een meer kleurrijk alternatief voor {{welkom2}}",
-					syntax: "{{welkom3|~~~~}}",
+					syntax:
+						"{{welkom3|~~~~}}",
 				},
 			},
 		},
@@ -344,7 +361,8 @@
 			"Formele verwelkoming": {
 				"hola-u": {
 					description: "Standaard verwelkoming in u-vorm",
-					syntax: "{{hola-u|gebruiker|~~~~}}",
+					syntax:
+						"{{hola-u|gebruiker|~~~~}}",
 				},
 				"salut-u": {
 					description:
@@ -358,11 +376,13 @@
 				},
 				"welkom2-u": {
 					description: "Een alternatief voor {{hola-u}}",
-					syntax: "{{welkom2-u|~~~~}}",
+					syntax:
+						"{{welkom2-u|~~~~}}",
 				},
 				"welkom3-u": {
 					description: "Een meer kleurrijk alternatief voor {{welkom2-u}}",
-					syntax: "{{welkom3-u|~~~~}}",
+					syntax:
+						"{{welkom3-u|~~~~}}",
 				},
 			},
 		},
@@ -371,7 +391,8 @@
 			"Engelse verwelkoming": {
 				welcome: {
 					description: "Standaard verwelkoming in het Engels",
-					syntax: "{{welcome}} ~~~~",
+					syntax:
+						"{{welcome}} ~~~~",
 				},
 				"salut-en": {
 					description: "Een meer persoonlijke verwelkoming in het Engels",
@@ -386,42 +407,48 @@
 					description:
 						"Verwelkoming en vriendelijke uitleg dat reclameartikels niet gewenst zijn",
 					linkedArticle: true,
-					syntax: "{{subst:Vreclame|$ARTICLE$}} ~~~~",
+					syntax:
+						"{{subst:Vreclame|$ARTICLE$}} ~~~~",
 				},
 				"Vreclame+nuweg": {
 					description:
 						"gelijk aan Vreclame, maar nu met mededeling van directe verwijdernominatie",
 					linkedArticle: true,
-					syntax: "{{subst:Vreclame|$ARTICLE$||direct}} ~~~~",
+					syntax:
+						"{{subst:Vreclame|$ARTICLE$||direct}} ~~~~",
 				},
 				vvn: {
 					description:
 						"verwelkoming en vriendelijk op de hoogte te stellen van een beoordelingslijst nominatie",
 					linkedArticle: true,
 					syntax:
-						"{{subst:vvn|$ARTICLE$|{{subst:LOCALYEAR}}|{{subst:LOCALMONTH}}|{{subst:LOCALDAY2}} }} ~~~~",
+						"Hallo anonieme gebruiker, ik zag dat je een artikel hebt geschreven over [[$ARTICLE$]]. Dit artikel is naar mijn mening nu (nog) niet geschikt voor Wikipedia.  Het is daarom op de [[Wikipedia:Te beoordelen pagina's/Toegevoegd 20250816 #$ARTICLE$|beoordelingslijst]] geplaatst en daar is ook de mogelijkheid op de geuite bezwaren te reageren. De komende twee weken kan iedereen daar zijn of haar mening geven. Bovendien kan iedereen het artikel in die periode nog verbeteren. Daarna beslist een van de moderatoren op grond van de argumenten op de beoordelingslijst en de richtlijnen of het artikel op Wikipedia kan blijven staan. Meer achtergrondinformatie is te vinden op [[Help:Waarom staat mijn artikel op de beoordelingslijst|Waarom staat mijn artikel op de beoordelingslijst]], [[Wikipedia:Conventies|Conventies waaraan artikelen na verloop van tijd (zouden) moeten voldoen]], [[Wikipedia:Relevantie per onderwerp|Relevantie van het onderwerp voor Wikipedia]]. ~~~~",
 				},
 				vzb: {
 					description: "Verwelkom na een terugdraaiing, met zandbak verwijzing",
 					linkedArticle: true,
-					syntax: "{{subst:vzb|$ARTICLE$|$USERNAME$}} ~~~~",
+					syntax:
+						"{{subst:vzb|$ARTICLE$|$USERNAME$}} ~~~~",
 				},
 				zp: {
 					description:
 						"verwelkoming en vriendelijke uitleg over de onwenselijkheid van een zelfpromotie-artikel",
 					linkedArticle: true,
-					syntax: "{{subst:zp|$ARTICLE$}} ~~~~",
+					syntax:
+						"{{subst:zp|$ARTICLE$}} ~~~~",
 				},
 				"zp+nuweg": {
 					description:
 						"gelijk aan zp, maar nu met mededeling van directe verwijdernominatie",
 					linkedArticle: true,
-					syntax: "{{subst:zp|$ARTICLE$||direct}} ~~~~",
+					syntax:
+						"{{subst:zp|$ARTICLE$||direct}} ~~~~",
 				},
 				vgp: {
 					description:
 						"verwelkoming en vriendelijke uitleg over onjuist gebruik van de gebruikerspagina",
-					syntax: "{{vgp}} ~~~~",
+					syntax:
+						"{{vgp}} ~~~~",
 				},
 				gpi: {
 					description:
@@ -455,7 +482,9 @@
 			"{{" +
 			template +
 			"}}" +
-			(Twinkle.getPref("customWelcomeSignature") ? " ~~~~" : "")
+			(Twinkle.getPref("customWelcomeSignature")
+				? "~~~~"
+				: "")
 		);
 	};
 
@@ -479,7 +508,7 @@
 					input.template,
 					input.article
 				),
-				"User talk:" + mw.config.get("wgRelevantUserName")
+				"Overleg gebruiker:" + mw.config.get("wgRelevantUserName")
 			); // Force wikitext/correct username
 
 			var submit = document.createElement("input");
