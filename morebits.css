@@ -135,7 +135,7 @@ form.quickform div + h5, form.quickform div + div > h5, form.quickform h5 + h5
 form.quickform textarea
 {
 	width: 100%;
-	height: 4em;
+	height: 7em;
 	font-size: 150%;
 }
 
