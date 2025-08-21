@@ -69,16 +69,16 @@ Twinkle.defaultConfig = {
 
 	// Fluff (revert and rollback)
 	autoMenuAfterRollback: true,
-	openTalkPage: [ 'norm', 'vand' ],
+	openTalkPage: ['norm', 'vand'],
 	openTalkPageOnAutoRevert: false,
 	rollbackInPlace: false,
-	markRevertedPagesAsMinor: [ 'vand' ],
-	watchRevertedPages: [ 'norm', 'vand', 'torev' ],
+	markRevertedPagesAsMinor: ['vand'],
+	watchRevertedPages: ['norm', 'vand', 'torev'],
 	watchRevertedExpiry: '1 month',
 	offerReasonOnNormalRevert: true,
 	confirmOnFluff: false,
 	confirmOnMobileFluff: true,
-	showRollbackLinks: [ 'diff', 'others', 'recent', 'history' ],
+	showRollbackLinks: ['diff', 'others', 'recent', 'history'],
 
 	// CSD
 	speedySelectionStyle: 'buttonClick',
@@ -86,9 +86,42 @@ Twinkle.defaultConfig = {
 	watchSpeedyExpiry: '1 month',
 	markSpeedyPagesAsPatrolled: true,
 	watchSpeedyUser: '1 month',
-	welcomeUserOnSpeedyDeletionNotification: [ 'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'g9', 'u2' ],
-	notifyUserOnSpeedyDeletionNomination: [ 'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'g9', 'u2' ],
-	warnUserOnSpeedyDelete: [ 'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'g9', 'u2' ],
+	welcomeUserOnSpeedyDeletionNotification: [
+		'g1',
+		'g2',
+		'g3',
+		'g4',
+		'g5',
+		'g6',
+		'g7',
+		'g8',
+		'g9',
+		'u2'
+	],
+	notifyUserOnSpeedyDeletionNomination: [
+		'g1',
+		'g2',
+		'g3',
+		'g4',
+		'g5',
+		'g6',
+		'g7',
+		'g8',
+		'g9',
+		'u2'
+	],
+	warnUserOnSpeedyDelete: [
+		'g1',
+		'g2',
+		'g3',
+		'g4',
+		'g5',
+		'g6',
+		'g7',
+		'g8',
+		'g9',
+		'u2'
+	],
 	promptForSpeedyDeletionSummary: [],
 	deleteTalkPageOnDelete: true,
 	deleteRedirectsOnDelete: true,
@@ -97,10 +130,10 @@ Twinkle.defaultConfig = {
 	speedyWindowWidth: 800,
 	logSpeedyNominations: false,
 	speedyLogPageName: 'nuweg logboek',
-	noLogOnSpeedyNomination: [ 'u1' ],
+	noLogOnSpeedyNomination: ['u1'],
 
 	// Unlink
-	unlinkNamespaces: [ '0', '10', '100' ],
+	unlinkNamespaces: ['0', '10', '100'],
 
 	// Warn
 	defaultWarningGroup: '1',
@@ -149,7 +182,7 @@ Twinkle.defaultConfig = {
 	watchWelcomes: '3 months',
 	insertUsername: true,
 	quickWelcomeMode: 'norm',
-	quickWelcomeTemplate: 'hola',
+	quickWelcomeTemplate: 'subst:Salut',
 	customWelcomeList: [],
 	customWelcomeSignature: true,
 

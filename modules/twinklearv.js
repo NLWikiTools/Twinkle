@@ -26,19 +26,24 @@ Twinkle.arv = function twinklearv() {
 		return;
 	}
 
+	var isTA = mw.util.isTemporaryUser(username);
 	var isIP = mw.util.isIPAddress(username, true);
 	// Ignore ranges wider than the CIDR limit
 	if (Morebits.ip.isRange(username) && !Morebits.ip.validCIDR(username)) {
 		return;
 	}
-	var userType = isIP ? 'IP' + (Morebits.ip.isRange(username) ? ' subnet' : '') : 'gebruiker';
+	var userType = isIP
+		? 'IP' + (Morebits.ip.isRange(username) ? ' subnet' : '')
+		: isTA
+			? 'tijdelijk account'
+			: 'gebruiker';
 
 	Twinkle.addPortletLink(function() {
-		Twinkle.arv.callback(username, isIP);
+		Twinkle.arv.callback(username, isIP, isTA);
 	}, 'Rapporteer', 'tw-arv', 'Rapporteer ' + userType);
 };
 
-Twinkle.arv.callback = function (uid, isIP) {
+Twinkle.arv.callback = function (uid, isIP, isTA) {
 	var Window = new Morebits.simpleWindow(600, 500);
 	Window.setTitle('Rapporteer gebruiker');
 	Window.setScriptName('Twinkle');
@@ -51,24 +56,24 @@ Twinkle.arv.callback = function (uid, isIP) {
 	var categories = form.append({
 		type: 'select',
 		name: 'category',
-		label: 'Selecteer locatie van rapporteren: ',
+		label: 'Selecteer type melding: ',
 		event: Twinkle.arv.callback.changeCategory
 	});
 	categories.append({
 		type: 'option',
-		label: 'WP:Regblok',
+		label: 'Geregistreerde gebruiker',
 		value: 'regblok',
-		disabled: isIP
+		disabled: isTA || isIP
 	});
 	categories.append({
 		type: 'option',
-		label: 'WP:IPBlok',
+		label: 'Anonieme gebruiker',
 		value: 'ipblok',
-		disabled: !isIP
+		disabled: !(isTA || isIP)
 	});
 	categories.append({
 		type: 'option',
-		label: 'WP:Sokpop',
+		label: 'Sokpop',
 		value: 'sokpop'
 	});
 
@@ -166,6 +171,14 @@ Twinkle.arv.callback.changeCategory = function (e) {
 					{
 						label: 'Spambot',
 						value: 'spambot'
+					},
+					{
+						label: 'Intermenselijk wangedrag',
+						value: 'aanval'
+					},
+					{
+						label: 'Leesblok/Afkoelblok',
+						value: 'leesblok'
 					}
 				]
 			});
@@ -181,7 +194,7 @@ Twinkle.arv.callback.changeCategory = function (e) {
 		case 'ipblok':
 			work_area = new Morebits.quickForm.element({
 				type: 'field',
-				label: 'Rapporteer IP gebruiker',
+				label: 'Rapporteer anonieme gebruiker',
 				name: 'work_area'
 			});
 			work_area.append({
@@ -203,6 +216,10 @@ Twinkle.arv.callback.changeCategory = function (e) {
 					{
 						label: 'Spambot',
 						value: 'spambot'
+					},
+					{
+						label: 'Intermenselijk wangedrag',
+						value: 'aanval'
 					}
 				]
 			});
@@ -287,6 +304,10 @@ Twinkle.arv.callback.evaluate = function(e) {
 						return 'crosswiki vandaal';
 					case 'spambot':
 						return 'spambot';
+					case 'aanval':
+						return 'intermenselijk wangedrag';
+					case 'leesblok':
+						return 'leesblok/afkoelblok';
 					default:
 						return 'geen reden opgegeven';
 				}
@@ -346,6 +367,8 @@ Twinkle.arv.callback.evaluate = function(e) {
 						return 'crosswiki vandaal';
 					case 'spambot':
 						return 'spambot';
+					case 'aanval':
+						return 'intermenselijk wangedrag';
 					default:
 						return 'geen reden opgegeven';
 				}

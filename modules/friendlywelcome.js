@@ -10,23 +10,27 @@
  * https://github.com/NLWikiTools/Twinkle/blob/master/modules/friendlywelcome.js                     *
  **************************************************************************************************** */
 
-
-(function($) {
-
-
+(function ($) {
 /*
- ****************************************
- *** friendlywelcome.js: Welcome module
- ****************************************
- * Mode of invocation:     Tab ("Wel"), or from links on diff pages
- * Active on:              Any page with relevant user name (userspace,
- *                         contribs, etc.) and diff pages
- */
+	 ****************************************
+	 *** friendlywelcome.js: Welcome module
+	 ****************************************
+	 * Mode of invocation:     Tab ("Wel"), or from links on diff pages
+	 * Active on:              Any page with relevant user name (userspace,
+	 *                         contribs, etc.) and diff pages
+	 */
 
 Twinkle.welcome = function friendlywelcome() {
 	if (mw.util.getParamValue('friendlywelcome')) {
 		if (mw.util.getParamValue('friendlywelcome') === 'auto') {
-			Twinkle.welcome.auto();
+			if (mw.config.get('wgRelevantUserName') === mw.config.get('wgUserName')) {
+				alert(
+					'Is het niet een beetje sneu om jezelf welkom te gaan heten?'
+				);
+
+			} else {
+				Twinkle.welcome.auto();
+			}
 		} else {
 			Twinkle.welcome.semiauto();
 		}
@@ -35,70 +39,122 @@ Twinkle.welcome = function friendlywelcome() {
 	}
 };
 
-Twinkle.welcome.auto = function() {
-	if (mw.util.getParamValue('action') !== 'edit') {
-		// userpage not empty, aborting auto-welcome
+Twinkle.welcome.auto = function () {
+	// Use wgArticleId to check if the page exists
+	if (mw.config.get('wgArticleId') !== 0) {
 		return;
 	}
 
 	Twinkle.welcome.welcomeUser();
 };
 
-Twinkle.welcome.semiauto = function() {
+Twinkle.welcome.semiauto = function () {
 	Twinkle.welcome.callback(mw.config.get('wgRelevantUserName'));
 };
 
-Twinkle.welcome.normal = function() {
-	if (mw.util.getParamValue('diff')) {
+Twinkle.welcome.normal = function () {
+	const isDiff = mw.util.getParamValue('diff');
+	if (isDiff) {
 		// check whether the contributors' talk pages exist yet
-		var $oList = $('#mw-diff-otitle2').find('span.mw-usertoollinks a.new:contains(overleg)').first();
-		var $nList = $('#mw-diff-ntitle2').find('span.mw-usertoollinks a.new:contains(overleg)').first();
+		const $oldDiffUsernameLine = $('#mw-diff-otitle2');
+		const $newDiffUsernameLine = $('#mw-diff-ntitle2');
+		const $oldDiffHasRedlinkedTalkPage = $oldDiffUsernameLine
+			.find('span.mw-usertoollinks a.new:contains(overleg)')
+			.first();
+		const $newDiffHasRedlinkedTalkPage = $newDiffUsernameLine
+			.find('span.mw-usertoollinks a.new:contains(overleg)')
+			.first();
 
-		if ($oList.length > 0 || $nList.length > 0) {
-			var spanTag = function(color, content) {
-				var span = document.createElement('span');
+		if (
+			$oldDiffHasRedlinkedTalkPage.length > 0 ||
+				$newDiffHasRedlinkedTalkPage.length > 0
+		) {
+			const spanTag = function (color, content) {
+				const span = document.createElement('span');
 				span.style.color = color;
 				span.appendChild(document.createTextNode(content));
 				return span;
 			};
 
-			var welcomeNode = document.createElement('strong');
-			var welcomeLink = document.createElement('a');
+			const welcomeNode = document.createElement('strong');
+			const welcomeLink = document.createElement('a');
 			welcomeLink.appendChild(spanTag('Black', '['));
 			welcomeLink.appendChild(spanTag('Goldenrod', 'welkom'));
 			welcomeLink.appendChild(spanTag('Black', ']'));
 			welcomeNode.appendChild(welcomeLink);
 
-			if ($oList.length > 0) {
-				var oHref = $oList.attr('href');
+			if ($oldDiffHasRedlinkedTalkPage.length > 0) {
+				const oHref = $oldDiffHasRedlinkedTalkPage.attr('href');
 
 				var oWelcomeNode = welcomeNode.cloneNode(true);
-				oWelcomeNode.firstChild.setAttribute('href', oHref + '&' + $.param({
-					friendlywelcome: Twinkle.getPref('quickWelcomeMode') === 'auto' ? 'auto' : 'norm',
-					vanarticle: Morebits.pageNameNorm
-				}));
-				$oList[0].parentNode.parentNode.appendChild(document.createTextNode(' '));
-				$oList[0].parentNode.parentNode.appendChild(oWelcomeNode);
+				oWelcomeNode.firstChild.setAttribute(
+					'href',
+					oHref +
+							(oHref.indexOf('?') === -1 ? '?' : '&') +
+							$.param({
+								friendlywelcome:
+									Twinkle.getPref('quickWelcomeMode') === 'auto'
+										? 'auto'
+										: 'norm',
+								vanarticle: Morebits.pageNameNorm
+							})
+				);
+				$oldDiffHasRedlinkedTalkPage[0].parentNode.parentNode.appendChild(
+					document.createTextNode(' ')
+				);
+				$oldDiffHasRedlinkedTalkPage[0].parentNode.parentNode.appendChild(
+					oWelcomeNode
+				);
 			}
 
-			if ($nList.length > 0) {
-				var nHref = $nList.attr('href');
+			if ($newDiffHasRedlinkedTalkPage.length > 0) {
+				const nHref = $newDiffHasRedlinkedTalkPage.attr('href');
 
 				var nWelcomeNode = welcomeNode.cloneNode(true);
-				nWelcomeNode.firstChild.setAttribute('href', nHref + '&' + $.param({
-					friendlywelcome: Twinkle.getPref('quickWelcomeMode') === 'auto' ? 'auto' : 'norm',
-					vanarticle: Morebits.pageNameNorm
-				}));
-				$nList[0].parentNode.parentNode.appendChild(document.createTextNode(' '));
-				$nList[0].parentNode.parentNode.appendChild(nWelcomeNode);
+				nWelcomeNode.firstChild.setAttribute(
+					'href',
+					nHref +
+							(nHref.indexOf('?') === -1 ? '?' : '&') +
+							$.param({
+								friendlywelcome:
+									Twinkle.getPref('quickWelcomeMode') === 'auto'
+										? 'auto'
+										: 'norm',
+								vanarticle: Morebits.pageNameNorm
+							})
+				);
+				$newDiffHasRedlinkedTalkPage[0].parentNode.parentNode.appendChild(
+					document.createTextNode(' ')
+				);
+				$newDiffHasRedlinkedTalkPage[0].parentNode.parentNode.appendChild(
+					nWelcomeNode
+				);
 			}
 		}
 	}
 	// Users and IPs but not IP ranges
-	if (mw.config.exists('wgRelevantUserName') && !Morebits.ip.isRange(mw.config.get('wgRelevantUserName'))) {
-		Twinkle.addPortletLink(function() {
-			Twinkle.welcome.callback(mw.config.get('wgRelevantUserName'));
-		}, 'Welkom', 'friendly-welcome', 'Verwelkom gebruiker');
+	if (
+		mw.config.exists('wgRelevantUserName') &&
+			!Morebits.ip.isRange(mw.config.get('wgRelevantUserName'))
+	) {
+		Twinkle.addPortletLink(
+			function () {
+				var talkPageUrl = mw.util.getUrl(
+					'Overleg_gebruiker:' + mw.config.get('wgRelevantUserName')
+				);
+				if (Twinkle.getPref('quickWelcomeMode') === 'auto') {
+					talkPageUrl +=
+							(talkPageUrl.indexOf('?') === -1 ? '?' : '&') +
+							'friendlywelcome=auto';
+					window.location.href = talkPageUrl;
+				} else {
+					Twinkle.welcome.callback(mw.config.get('wgRelevantUserName'));
+				}
+			},
+			'Welkom',
+			'friendly-welcome',
+			'Verwelkom gebruiker'
+		);
 	}
 };
 
@@ -112,18 +168,28 @@ Twinkle.welcome.welcomeUser = function welcomeUser() {
 		mode: 'auto'
 	};
 
-	var userTalkPage = mw.config.get('wgFormattedNamespaces')[3] + ':' + mw.config.get('wgRelevantUserName');
+	var userTalkPage =
+			mw.config.get('wgFormattedNamespaces')[3] +
+			':' +
+			mw.config.get('wgRelevantUserName');
 	Morebits.wiki.actionCompleted.redirect = userTalkPage;
-	Morebits.wiki.actionCompleted.notice = 'Verwelkoming gelukt, pagina wordt binnen enkele ogenblikken herladen';
+	Morebits.wiki.actionCompleted.notice =
+			'Verwelkoming gelukt, pagina wordt binnen enkele ogenblikken herladen';
 
-	var wikipedia_page = new Morebits.wiki.page(userTalkPage, 'Gebruikersoverleg-pagina bewerken');
+	var wikipedia_page = new Morebits.wiki.page(
+		userTalkPage,
+		'Gebruikersoverleg-pagina bewerken'
+	);
 	wikipedia_page.setFollowRedirect(true);
 	wikipedia_page.setCallbackParameters(params);
 	wikipedia_page.load(Twinkle.welcome.callbacks.main);
 };
 
 Twinkle.welcome.callback = function friendlywelcomeCallback(uid) {
-	if (uid === mw.config.get('wgUserName') && !confirm('Is het niet een beetje sneu om jezelf welkom te gaan heten?')) {
+	if (
+		uid === mw.config.get('wgUserName') &&
+			!confirm('Is het niet een beetje sneu om jezelf welkom te gaan heten?')
+	) {
 		return;
 	}
 
@@ -141,7 +207,12 @@ Twinkle.welcome.callback = function friendlywelcomeCallback(uid) {
 		label: 'Type verwelkoming: ',
 		event: Twinkle.welcome.populateWelcomeList,
 		list: [
-			{ type: 'option', value: 'standard', label: 'Standaard verwelkoming', selected: true },
+			{
+				type: 'option',
+				value: 'standard',
+				label: 'Standaard verwelkoming',
+				selected: true
+			},
 			{ type: 'option', value: 'formal', label: 'Formele verwelkoming' },
 			{ type: 'option', value: 'english', label: 'Engelse verwelkoming' },
 			{ type: 'option', value: 'problem', label: 'Verwelkom na probleem' }
@@ -159,16 +230,17 @@ Twinkle.welcome.callback = function friendlywelcomeCallback(uid) {
 		name: 'article',
 		label: '* Betrokken artikel (indien ondersteund door sjabloon):',
 		value: mw.util.getParamValue('vanarticle') || '',
-		tooltip: 'Een verwelkoming kan soms worden gekoppeld aan een artikel. Laat leeg om geen artikel te koppelen.  Sjablonen die een koppeling ondersteunen zijn gemarkeerd met een *.'
+		tooltip:
+				'Een verwelkoming kan soms worden gekoppeld aan een artikel. Laat leeg om geen artikel te koppelen.  Sjablonen die een koppeling ondersteunen zijn gemarkeerd met een *.'
 	});
 
 	var previewlink = document.createElement('a');
-	$(previewlink).click(function() {
-		Twinkle.welcome.callbacks.preview(result);  // |result| is defined below
+	$(previewlink).click(function () {
+		Twinkle.welcome.callbacks.preview(result); // |result| is defined below
 	});
 	previewlink.style.cursor = 'pointer';
 	previewlink.textContent = 'Voorvertoning';
-	form.append({ type: 'div', name: 'welcomepreview', label: [ previewlink ] });
+	form.append({ type: 'div', name: 'welcomepreview', label: [previewlink] });
 
 	form.append({ type: 'submit' });
 
@@ -182,38 +254,50 @@ Twinkle.welcome.callback = function friendlywelcomeCallback(uid) {
 	result.type.dispatchEvent(evt);
 };
 
-Twinkle.welcome.populateWelcomeList = function(e) {
+Twinkle.welcome.populateWelcomeList = function (e) {
 	var type = e.target.value;
 
 	var container = new Morebits.quickForm.element({ type: 'fragment' });
 
-	if ((type === 'standard' || type === 'anonymous') && Twinkle.getPref('customWelcomeList').length) {
-		container.append({ type: 'header', label: 'Aangepaste verwelkomingssjablonen' });
+	if (
+		(type === 'standard' || type === 'anonymous') &&
+			Twinkle.getPref('customWelcomeList').length
+	) {
+		container.append({
+			type: 'header',
+			label: 'Aangepaste verwelkomingssjablonen'
+		});
 		container.append({
 			type: 'radio',
 			name: 'template',
 			list: Twinkle.getPref('customWelcomeList'),
-			event: function() {
+			event: function () {
 				e.target.form.article.disabled = false;
 			}
 		});
 	}
 
 	var sets = Twinkle.welcome.templates[type];
-	$.each(sets, function(label, templates) {
+	$.each(sets, function (label, templates) {
 		container.append({ type: 'header', label: label });
 		container.append({
 			type: 'radio',
 			name: 'template',
-			list: $.map(templates, function(properties, template) {
+			list: $.map(templates, function (properties, template) {
 				return {
 					value: template,
-					label: '{{' + template + '}}: ' + properties.description + (properties.linkedArticle ? '\u00A0*' : ''),  // U+00A0 NO-BREAK SPACE
-					tooltip: properties.tooltip  // may be undefined
+					label:
+							'{{' +
+							template +
+							'}}: ' +
+							properties.description +
+							(properties.linkedArticle ? '\u00A0*' : ''), // U+00A0 NO-BREAK SPACE
+					tooltip: properties.tooltip // may be undefined
 				};
 			}),
-			event: function(ev) {
-				ev.target.form.article.disabled = !templates[ev.target.value].linkedArticle;
+			event: function (ev) {
+				ev.target.form.article.disabled =
+						!templates[ev.target.value].linkedArticle;
 			}
 		});
 	});
@@ -224,7 +308,9 @@ Twinkle.welcome.populateWelcomeList = function(e) {
 	var firstRadio = e.target.form.template[0];
 	firstRadio.checked = true;
 	var vals = sets[Object.keys(sets)[0]];
-	e.target.form.article.disabled = vals[firstRadio.value] ? !vals[firstRadio.value].linkedArticle : true;
+	e.target.form.article.disabled = vals[firstRadio.value]
+		? !vals[firstRadio.value].linkedArticle
+		: true;
 };
 
 // A list of welcome templates and their properties and syntax
@@ -243,11 +329,13 @@ Twinkle.welcome.templates = {
 				syntax: '{{hola|gebruiker|~~~~}}'
 			},
 			'salut': {
-				description: 'Een meer persoonlijke verwelkoming voor ingelogde gebruikers',
+				description:
+					'Een meer persoonlijke verwelkoming voor ingelogde gebruikers',
 				syntax: '{{subst:Salut}}'
 			},
 			'salut-anon': {
-				description: 'Een meer persoonlijke verwelkoming voor anonieme gebruikers',
+				description:
+					'Een meer persoonlijke verwelkoming voor anonieme gebruikers',
 				syntax: '{{subst:Salut-anon}}'
 			},
 			'welkom2': {
@@ -268,11 +356,13 @@ Twinkle.welcome.templates = {
 				syntax: '{{hola-u|gebruiker|~~~~}}'
 			},
 			'salut-u': {
-				description: 'Een meer persoonlijke verwelkoming voor ingelogde gebruikers in u-vorm',
+				description:
+					'Een meer persoonlijke verwelkoming voor ingelogde gebruikers in u-vorm',
 				syntax: '{{subst:salut-u}}'
 			},
 			'salut-anon-u': {
-				description: 'Een meer persoonlijke verwelkoming voor anonieme gebruikers in u-vorm',
+				description:
+					'Een meer persoonlijke verwelkoming voor anonieme gebruikers in u-vorm',
 				syntax: '{{subst:salut-anon-u}}'
 			},
 			'welkom2-u': {
@@ -302,19 +392,23 @@ Twinkle.welcome.templates = {
 	problem: {
 		'Verwelkoming na een proleem': {
 			'Vreclame': {
-				description: 'Verwelkoming en vriendelijke uitleg dat reclameartikels niet gewenst zijn',
+				description:
+					'Verwelkoming en vriendelijke uitleg dat reclameartikels niet gewenst zijn',
 				linkedArticle: true,
 				syntax: '{{subst:Vreclame|$ARTICLE$}} ~~~~'
 			},
 			'Vreclame+nuweg': {
-				description: 'gelijk aan Vreclame, maar nu met mededeling van directe verwijdernominatie',
+				description:
+					'gelijk aan Vreclame, maar nu met mededeling van directe verwijdernominatie',
 				linkedArticle: true,
 				syntax: '{{subst:Vreclame|$ARTICLE$||direct}} ~~~~'
 			},
 			'vvn': {
-				description: 'verwelkoming en vriendelijk op de hoogte te stellen van een beoordelingslijst nominatie',
+				description:
+					'verwelkoming en vriendelijk op de hoogte te stellen van een beoordelingslijst nominatie',
 				linkedArticle: true,
-				syntax: '{{subst:vvn|$ARTICLE$|{{subst:LOCALYEAR}}|{{subst:LOCALMONTH}}|{{subst:LOCALDAY2}} }} ~~~~'
+				syntax:
+					'{{subst:vvn|$ARTICLE$|{{subst:LOCALYEAR}}|{{subst:LOCALMONTH}}|{{subst:LOCALDAY2}} }} ~~~~'
 			},
 			'vzb': {
 				description: 'Verwelkom na een terugdraaiing, met zandbak verwijzing',
@@ -322,49 +416,62 @@ Twinkle.welcome.templates = {
 				syntax: '{{subst:vzb|$ARTICLE$|$USERNAME$}} ~~~~'
 			},
 			'zp': {
-				description: 'verwelkoming en vriendelijke uitleg over de onwenselijkheid van een zelfpromotie-artikel',
+				description:
+					'verwelkoming en vriendelijke uitleg over de onwenselijkheid van een zelfpromotie-artikel',
 				linkedArticle: true,
 				syntax: '{{subst:zp|$ARTICLE$}} ~~~~'
 			},
 			'zp+nuweg': {
-				description: 'gelijk aan zp, maar nu met mededeling van directe verwijdernominatie',
+				description:
+					'gelijk aan zp, maar nu met mededeling van directe verwijdernominatie',
 				linkedArticle: true,
 				syntax: '{{subst:zp|$ARTICLE$||direct}} ~~~~'
 			},
 			'vgp': {
-				description: 'verwelkoming en vriendelijke uitleg over onjuist gebruik van de gebruikerspagina',
+				description:
+					'verwelkoming en vriendelijke uitleg over onjuist gebruik van de gebruikerspagina',
 				syntax: '{{vgp}} ~~~~'
 			},
 			'gpi': {
-				description: 'verwelkomen en uitleggen dat het toevoegen van persoonlijke informatie ongewenst is',
+				description:
+					'verwelkomen en uitleggen dat het toevoegen van persoonlijke informatie ongewenst is',
 				syntax: '{{gpi}}'
 			}
 		}
 	}
 };
 
-Twinkle.welcome.getTemplateWikitext = function(type, template, article) {
+Twinkle.welcome.getTemplateWikitext = function (type, template, article) {
 	// the iteration is required as the type=standard has two groups
 	var properties;
-	$.each(Twinkle.welcome.templates[type], function(label, templates) {
+	$.each(Twinkle.welcome.templates[type], function (label, templates) {
 		properties = templates[template];
 		if (properties) {
 			return false; // break
 		}
 	});
 	if (properties) {
-		return properties.syntax.
-			replace('$USERNAME$', Twinkle.getPref('insertUsername') ? mw.config.get('wgUserName') : '').
-			replace('$ARTICLE$', article ? article : '').
-			replace(/\$HEADER\$\s*/, '== Welkom ==\n\n').
-			replace('$EXTRA$', '');  // EXTRA is not implemented yet
+		return properties.syntax
+			.replace(
+				'$USERNAME$',
+				Twinkle.getPref('insertUsername') ? mw.config.get('wgUserName') : ''
+			)
+			.replace('$ARTICLE$', article ? article : '')
+			.replace(/\$HEADER\$\s*/, '== Welkom ==\n\n')
+			.replace('$EXTRA$', ''); // EXTRA is not implemented yet
 	}
-	return '{{' + template + '}}' +
-			(Twinkle.getPref('customWelcomeSignature') ? ' ~~~~' : '');
+	return (
+		'{{' +
+			template +
+			'}}' +
+			(Twinkle.getPref('customWelcomeSignature')
+				? '~~~~'
+				: '')
+	);
 };
 
 Twinkle.welcome.callbacks = {
-	preview: function(form) {
+	preview: function (form) {
 		var previewDialog = new Morebits.simpleWindow(750, 400);
 		previewDialog.setTitle('Welkom sjabloon voorvertoning');
 		previewDialog.setScriptName('Verwelkom gebruiker');
@@ -377,7 +484,14 @@ Twinkle.welcome.callbacks = {
 
 		var previewer = new Morebits.wiki.preview(previewdiv);
 		var input = Morebits.quickForm.getInputData(form);
-		previewer.beginRender(Twinkle.welcome.getTemplateWikitext(input.type, input.template, input.article), 'User talk:' + mw.config.get('wgRelevantUserName')); // Force wikitext/correct username
+		previewer.beginRender(
+			Twinkle.welcome.getTemplateWikitext(
+				input.type,
+				input.template,
+				input.article
+			),
+			'Overleg gebruiker:' + mw.config.get('wgRelevantUserName')
+		); // Force wikitext/correct username
 
 		var submit = document.createElement('input');
 		submit.setAttribute('type', 'submit');
@@ -386,22 +500,29 @@ Twinkle.welcome.callbacks = {
 
 		previewDialog.display();
 
-		$(submit).click(function() {
+		$(submit).click(function () {
 			previewDialog.close();
 		});
 	},
-	main: function(pageobj) {
+	main: function (pageobj) {
 		var params = pageobj.getCallbackParameters();
 		var text = pageobj.getPageText();
 
 		// abort if mode is auto and form is not empty
 		if (pageobj.exists() && params.mode === 'auto') {
-			Morebits.status.info('Waarschuwing', 'Overlegpagina is niet leeg, sjabloon plaatsen afgebroken');
+			Morebits.status.info(
+				'Waarschuwing',
+				'Overlegpagina is niet leeg, sjabloon plaatsen afgebroken'
+			);
 			Morebits.wiki.actionCompleted.event();
 			return;
 		}
 
-		var welcomeText = Twinkle.welcome.getTemplateWikitext(params.type, params.template, params.article);
+		var welcomeText = Twinkle.welcome.getTemplateWikitext(
+			params.type,
+			params.template,
+			params.article
+		);
 
 		if (Twinkle.getPref('topWelcomes')) {
 			text = welcomeText + '\n\n' + text;
@@ -419,7 +540,9 @@ Twinkle.welcome.callbacks = {
 	}
 };
 
-Twinkle.welcome.callback.evaluate = function friendlywelcomeCallbackEvaluate(e) {
+Twinkle.welcome.callback.evaluate = function friendlywelcomeCallbackEvaluate(
+	e
+) {
 	var form = e.target;
 
 	var params = Morebits.quickForm.getInputData(form); // : type, template, article
@@ -428,11 +551,18 @@ Twinkle.welcome.callback.evaluate = function friendlywelcomeCallbackEvaluate(e) 
 	Morebits.simpleWindow.setButtonsEnabled(false);
 	Morebits.status.init(form);
 
-	var userTalkPage = mw.config.get('wgFormattedNamespaces')[3] + ':' + mw.config.get('wgRelevantUserName');
+	var userTalkPage =
+			mw.config.get('wgFormattedNamespaces')[3] +
+			':' +
+			mw.config.get('wgRelevantUserName');
 	Morebits.wiki.actionCompleted.redirect = userTalkPage;
-	Morebits.wiki.actionCompleted.notice = 'Verwelkomen voltooid, pagina wordt in enkele seconden herladen';
+	Morebits.wiki.actionCompleted.notice =
+			'Verwelkomen voltooid, pagina wordt in enkele seconden herladen';
 
-	var wikipedia_page = new Morebits.wiki.page(userTalkPage, 'Gebruikerpagina bewerken');
+	var wikipedia_page = new Morebits.wiki.page(
+		userTalkPage,
+		'Gebruikerpagina bewerken'
+	);
 	wikipedia_page.setFollowRedirect(true);
 	wikipedia_page.setCallbackParameters(params);
 	wikipedia_page.load(Twinkle.welcome.callbacks.main);
@@ -440,6 +570,5 @@ Twinkle.welcome.callback.evaluate = function friendlywelcomeCallbackEvaluate(e) 
 
 Twinkle.addInitCallback(Twinkle.welcome, 'welcome');
 })(jQuery);
-
 
 // </nowiki>
