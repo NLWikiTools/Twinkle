@@ -323,135 +323,122 @@ Twinkle.welcome.populateWelcomeList = function (e) {
 
 Twinkle.welcome.templates = {
 	standard: {
-		'Standaard verwelkoming': {
-			'hola': {
-				description: 'Standaard verwelkoming',
-				syntax:
-						'{{hola|gebruiker|~~~~}}'
+		"Standaard verwelkoming": {
+			hola: {
+				description: "Standaard verwelkoming",
+				syntax: "{{hola|gebruiker|~~~~}}",
 			},
-			'salut': {
+			salut: {
 				description:
-						'Een meer persoonlijke verwelkoming voor ingelogde gebruikers',
-				syntax: '{{subst:Salut}}'
+					"Een meer persoonlijke verwelkoming voor ingelogde gebruikers",
+				syntax: "{{subst:Salut}}",
 			},
-			'salut-anon': {
+			"salut-anon": {
 				description:
-						'Een meer persoonlijke verwelkoming voor anonieme gebruikers',
-				syntax: '{{subst:Salut-anon}}'
+					"Een meer persoonlijke verwelkoming voor anonieme gebruikers",
+				syntax: "{{subst:Salut-anon}}",
 			},
-			'welkom2': {
-				description: 'Een alternatief voor {{hola}}',
-				syntax:
-						'{{welkom2|~~~~}}'
+			welkom2: {
+				description: "Een alternatief voor {{hola}}",
+				syntax: "{{welkom2|~~~~}}",
 			},
-			'welkom3': {
-				description: 'Een meer kleurrijk alternatief voor {{welkom2}}',
-				syntax:
-						'{{welkom3|~~~~}}'
-			}
-		}
+			welkom3: {
+				description: "Een meer kleurrijk alternatief voor {{welkom2}}",
+				syntax: "{{welkom3|~~~~}}",
+			},
+		},
 	},
 
 	formal: {
-		'Formele verwelkoming': {
-			'hola-u': {
-				description: 'Standaard verwelkoming in u-vorm',
-				syntax:
-						'{{hola-u|gebruiker|~~~~}}'
+		"Formele verwelkoming": {
+			"hola-u": {
+				description: "Standaard verwelkoming in u-vorm",
+				syntax: "{{hola-u|gebruiker|~~~~}}",
 			},
-			'salut-u': {
+			"salut-u": {
 				description:
-						'Een meer persoonlijke verwelkoming voor ingelogde gebruikers in u-vorm',
-				syntax: '{{subst:salut-u}}'
+					"Een meer persoonlijke verwelkoming voor ingelogde gebruikers in u-vorm",
+				syntax: "{{subst:salut-u}}",
 			},
-			'salut-anon-u': {
+			"salut-anon-u": {
 				description:
-						'Een meer persoonlijke verwelkoming voor anonieme gebruikers in u-vorm',
-				syntax: '{{subst:salut-anon-u}}'
+					"Een meer persoonlijke verwelkoming voor anonieme gebruikers in u-vorm",
+				syntax: "{{subst:salut-anon-u}}",
 			},
-			'welkom2-u': {
-				description: 'Een alternatief voor {{hola-u}}',
-				syntax:
-						'{{welkom2-u|~~~~}}'
+			"welkom2-u": {
+				description: "Een alternatief voor {{hola-u}}",
+				syntax: "{{welkom2-u|~~~~}}",
 			},
-			'welkom3-u': {
-				description: 'Een meer kleurrijk alternatief voor {{welkom2-u}}',
-				syntax:
-						'{{welkom3-u|~~~~}}'
-			}
-		}
+			"welkom3-u": {
+				description: "Een meer kleurrijk alternatief voor {{welkom2-u}}",
+				syntax: "{{welkom3-u|~~~~}}",
+			},
+		},
 	},
 
 	english: {
-		'Engelse verwelkoming': {
-			'welcome': {
-				description: 'Standaard verwelkoming in het Engels',
-				syntax:
-						'{{welcome}} ~~~~'
+		"Engelse verwelkoming": {
+			welcome: {
+				description: "Standaard verwelkoming in het Engels",
+				syntax: "{{welcome}} ~~~~",
 			},
-			'salut-en': {
-				description: 'Een meer persoonlijke verwelkoming in het Engels',
-				syntax: '{{subst:salut-en}}'
-			}
-		}
+			"salut-en": {
+				description: "Een meer persoonlijke verwelkoming in het Engels",
+				syntax: "{{subst:salut-en}}",
+			},
+		},
 	},
 
 	problem: {
-		'Verwelkoming na een proleem': {
-			'Vreclame': {
+		"Verwelkoming na een proleem": {
+			Vreclame: {
 				description:
-						'Verwelkoming en vriendelijke uitleg dat reclameartikels niet gewenst zijn',
+					"Verwelkoming en vriendelijke uitleg dat reclameartikels niet gewenst zijn",
+				linkedArticle: true,
+				syntax: "{{subst:Vreclame|$ARTICLE$}} ~~~~",
+			},
+			"Vreclame+nuweg": {
+				description:
+					"gelijk aan Vreclame, maar nu met mededeling van directe verwijdernominatie",
+				linkedArticle: true,
+				syntax: "{{subst:Vreclame|$ARTICLE$||direct}} ~~~~",
+			},
+			vvn: {
+				description:
+					"verwelkoming en vriendelijk op de hoogte te stellen van een beoordelingslijst nominatie",
 				linkedArticle: true,
 				syntax:
-						'{{subst:Vreclame|$ARTICLE$}} ~~~~'
+					"{{subst:vvn|$ARTICLE$|{{subst:LOCALYEAR}}|{{subst:LOCALMONTH}}|{{subst:LOCALDAY2}} }} ~~~~",
 			},
-			'Vreclame+nuweg': {
-				description:
-						'gelijk aan Vreclame, maar nu met mededeling van directe verwijdernominatie',
+			vzb: {
+				description: "Verwelkom na een terugdraaiing, met zandbak verwijzing",
 				linkedArticle: true,
-				syntax:
-						'{{subst:Vreclame|$ARTICLE$||direct}} ~~~~'
+				syntax: "{{subst:vzb|$ARTICLE$|$USERNAME$}} ~~~~",
 			},
-			'vvn': {
+			zp: {
 				description:
-						'verwelkoming en vriendelijk op de hoogte te stellen van een beoordelingslijst nominatie',
+					"verwelkoming en vriendelijke uitleg over de onwenselijkheid van een zelfpromotie-artikel",
 				linkedArticle: true,
-				syntax:
-						"Hallo anonieme gebruiker, ik zag dat je een artikel hebt geschreven over [[$ARTICLE$]]. Dit artikel is naar mijn mening nu (nog) niet geschikt voor Wikipedia.  Het is daarom op de [[Wikipedia:Te beoordelen pagina's/Toegevoegd 20250816 #$ARTICLE$|beoordelingslijst]] geplaatst en daar is ook de mogelijkheid op de geuite bezwaren te reageren. De komende twee weken kan iedereen daar zijn of haar mening geven. Bovendien kan iedereen het artikel in die periode nog verbeteren. Daarna beslist een van de moderatoren op grond van de argumenten op de beoordelingslijst en de richtlijnen of het artikel op Wikipedia kan blijven staan. Meer achtergrondinformatie is te vinden op [[Help:Waarom staat mijn artikel op de beoordelingslijst|Waarom staat mijn artikel op de beoordelingslijst]], [[Wikipedia:Conventies|Conventies waaraan artikelen na verloop van tijd (zouden) moeten voldoen]], [[Wikipedia:Relevantie per onderwerp|Relevantie van het onderwerp voor Wikipedia]]. ~~~~"
+				syntax: "{{subst:zp|$ARTICLE$}} ~~~~",
 			},
-			'vzb': {
-				description: 'Verwelkom na een terugdraaiing, met zandbak verwijzing',
+			"zp+nuweg": {
+				description:
+					"gelijk aan zp, maar nu met mededeling van directe verwijdernominatie",
 				linkedArticle: true,
-				syntax:
-						'{{subst:vzb|$ARTICLE$|$USERNAME$}} ~~~~'
+				syntax: "{{subst:zp|$ARTICLE$||direct}} ~~~~",
 			},
-			'zp': {
+			vgp: {
 				description:
-						'verwelkoming en vriendelijke uitleg over de onwenselijkheid van een zelfpromotie-artikel',
-				linkedArticle: true,
-				syntax:
-						'{{subst:zp|$ARTICLE$}} ~~~~'
+					"verwelkoming en vriendelijke uitleg over onjuist gebruik van de gebruikerspagina",
+				syntax: "{{vgp}} ~~~~",
 			},
-			'zp+nuweg': {
+			gpi: {
 				description:
-						'gelijk aan zp, maar nu met mededeling van directe verwijdernominatie',
-				linkedArticle: true,
-				syntax:
-						'{{subst:zp|$ARTICLE$||direct}} ~~~~'
+					"verwelkomen en uitleggen dat het toevoegen van persoonlijke informatie ongewenst is",
+				syntax: "{{gpi}}",
 			},
-			'vgp': {
-				description:
-						'verwelkoming en vriendelijke uitleg over onjuist gebruik van de gebruikerspagina',
-				syntax:
-						'{{vgp}} ~~~~'
-			},
-			'gpi': {
-				description:
-						'verwelkomen en uitleggen dat het toevoegen van persoonlijke informatie ongewenst is',
-				syntax: '{{gpi}}'
-			}
-		}
-	}
+		},
+	},
 };
 
 Twinkle.welcome.getTemplateWikitext = function (type, template, article) {
