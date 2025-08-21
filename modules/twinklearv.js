@@ -33,10 +33,10 @@ Twinkle.arv = function twinklearv() {
 		return;
 	}
 	var userType = isIP
-		? "IP" + (Morebits.ip.isRange(username) ? " subnet" : "")
+		? 'IP' + (Morebits.ip.isRange(username) ? ' subnet' : '')
 		: isTA
-		? "tijdelijk account"
-		: "gebruiker";
+			? 'tijdelijk account'
+			: 'gebruiker';
 
 	Twinkle.addPortletLink(function() {
 		Twinkle.arv.callback(username, isIP, isTA);
@@ -60,16 +60,16 @@ Twinkle.arv.callback = function (uid, isIP, isTA) {
 		event: Twinkle.arv.callback.changeCategory
 	});
 	categories.append({
-		type: "option",
-		label: "Geregistreerde gebruiker",
-		value: "regblok",
-		disabled: isTA || isIP,
+		type: 'option',
+		label: 'Geregistreerde gebruiker',
+		value: 'regblok',
+		disabled: isTA || isIP
 	});
 	categories.append({
-		type: "option",
-		label: "Anonieme gebruiker",
-		value: "ipblok",
-		disabled: !(isTA || isIP),
+		type: 'option',
+		label: 'Anonieme gebruiker',
+		value: 'ipblok',
+		disabled: !(isTA || isIP)
 	});
 	categories.append({
 		type: 'option',
@@ -178,7 +178,7 @@ Twinkle.arv.callback.changeCategory = function (e) {
 					},
 					{
 						label: 'Leesblok/Afkoelblok',
-						value: "leesblok"
+						value: 'leesblok'
 					}
 				]
 			});
@@ -198,30 +198,30 @@ Twinkle.arv.callback.changeCategory = function (e) {
 				name: 'work_area'
 			});
 			work_area.append({
-				type: "checkbox",
-				name: "arvtype",
+				type: 'checkbox',
+				name: 'arvtype',
 				list: [
 					{
-						label: "Doorgaand vandalisme na uitdelen laatste waarschuwing",
-						value: "final",
+						label: 'Doorgaand vandalisme na uitdelen laatste waarschuwing',
+						value: 'final'
 					},
 					{
-						label: "Doorgaand vandalisme na zeer recente blokkade",
-						value: "postblock",
+						label: 'Doorgaand vandalisme na zeer recente blokkade',
+						value: 'postblock'
 					},
 					{
-						label: "Crosswiki vandaal",
-						value: "crosswiki",
+						label: 'Crosswiki vandaal',
+						value: 'crosswiki'
 					},
 					{
-						label: "Spambot",
-						value: "spambot",
+						label: 'Spambot',
+						value: 'spambot'
 					},
 					{
-						label: "Intermenselijk wangedrag",
-						value: "aanval",
+						label: 'Intermenselijk wangedrag',
+						value: 'aanval'
 					}
-				],
+				]
 			});
 			work_area.append({
 				type: 'textarea',
@@ -294,22 +294,22 @@ Twinkle.arv.callback.evaluate = function(e) {
 
 			types = types.map(function(v) {
 				switch (v) {
-					case "final":
-						return "herhaald vandalisme";
-					case "postblock":
-						return "doorgaand vandalisme na recente blokkade";
-					case "og":
-						return "ongewenste gebruikersnaam";
-					case "crosswiki":
-						return "crosswiki vandaal";
-					case "spambot":
-						return "spambot";
-					case "aanval":
-						return "intermenselijk wangedrag";
-					case "leesblok":
-						return "leesblok/afkoelblok";
+					case 'final':
+						return 'herhaald vandalisme';
+					case 'postblock':
+						return 'doorgaand vandalisme na recente blokkade';
+					case 'og':
+						return 'ongewenste gebruikersnaam';
+					case 'crosswiki':
+						return 'crosswiki vandaal';
+					case 'spambot':
+						return 'spambot';
+					case 'aanval':
+						return 'intermenselijk wangedrag';
+					case 'leesblok':
+						return 'leesblok/afkoelblok';
 					default:
-						return "geen reden opgegeven";
+						return 'geen reden opgegeven';
 				}
 			}).join('; ');
 
@@ -359,18 +359,18 @@ Twinkle.arv.callback.evaluate = function(e) {
 
 			types = types.map(function(v) {
 				switch (v) {
-					case "final":
-						return "herhaald vandalisme";
-					case "postblock":
-						return "doorgaand vandalisme na recente blokkade";
-					case "crosswiki":
-						return "crosswiki vandaal";
-					case "spambot":
-						return "spambot";
-					case "aanval":
-						return "intermenselijk wangedrag";
+					case 'final':
+						return 'herhaald vandalisme';
+					case 'postblock':
+						return 'doorgaand vandalisme na recente blokkade';
+					case 'crosswiki':
+						return 'crosswiki vandaal';
+					case 'spambot':
+						return 'spambot';
+					case 'aanval':
+						return 'intermenselijk wangedrag';
 					default:
-						return "geen reden opgegeven";
+						return 'geen reden opgegeven';
 				}
 			}).join('; ');
 
