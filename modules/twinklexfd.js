@@ -238,11 +238,11 @@ Twinkle.xfd.callback.change_category = function twinklexfdCallbackChangeCategory
 				name: 'sjabloon'
 			});
 			sjabloon_select.append({ type: 'option', label: 'Algemene nominatie', value: 'verwijderen', selected: true });
-			sjabloon_select.append({ type: 'option', label: 'Werk in uitvoering', value: 'wiu'});
-			sjabloon_select.append({ type: 'option', label: 'Niet encyclopedisch', value: 'ne' });
-			sjabloon_select.append({ type: 'option', label: 'Woordenboekdefinitie', value: 'wb' });
-			sjabloon_select.append({ type: 'option', label: 'Promotionele uiting', value: 'reclame' });
-			sjabloon_select.append({ type: 'option', label: 'Schending auteursrechten', value: 'auteur' });
+			sjabloon_select.append({ type: 'option', label: 'Werk in uitvoering', value: 'verwijderen'});
+			sjabloon_select.append({ type: 'option', label: 'Niet encyclopedisch', value: 'verwijderen' });
+			sjabloon_select.append({ type: 'option', label: 'Woordenboekdefinitie', value: 'verwijderen' });
+			sjabloon_select.append({ type: 'option', label: 'Promotionele uiting', value: 'verwijderen' });
+			sjabloon_select.append({ type: 'option', label: 'Schending auteursrechten', value: 'verwijderen' });
 
 			if ((mw.config.get('wgNamespaceNumber') === 2 /* Gebruiker: */ || mw.config.get('wgNamespaceNumber') === 3 /* Overleg gebruiker: */) && mw.config.exists('wgRelevantUserName')) {
 				work_area.append({
