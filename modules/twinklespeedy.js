@@ -472,7 +472,7 @@ Twinkle.speedy.generalList = [
 		hideInNamespaces: [ 2 ] // Not applicable in userspace
 	},
 	{
-		label: 'Machinevertaling of niet in het Nederlands geschreven',
+		label: 'Niet in het Nederlands geschreven',
 		value: 'vertaling'
 	},
 	{
