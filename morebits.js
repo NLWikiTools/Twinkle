@@ -1487,7 +1487,7 @@ Morebits.string = {
 	formatReasonForLog: function(str) {
 		return str
 		// handle line breaks, which otherwise break numbering
-			.replace(/\n+/g, '{{pb}}')
+			.replace(/\n+/g, '<div class="paragraphbreak" style="margin-top:0.5em">')
 		// put an extra # in front before bulleted or numbered list items
 			.replace(/^(#+)/mg, '#$1')
 			.replace(/^(\*+)/mg, '#$1');
