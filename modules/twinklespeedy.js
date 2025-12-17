@@ -585,6 +585,10 @@ Twinkle.speedy.generalList = [
 		value: 'verplaatsing',
 		hideWhenUser: true,
 		hideWhenMultiple: true
+	},
+	{
+		label: 'Doorverwijzing naar niet-bestaande of verwijderde pagina, overbodige of onjuiste doorverwijzing',
+		value: 'redirect'
 	}
 ];
 
@@ -602,7 +606,8 @@ Twinkle.speedy.normalizeHash = {
 	eigennaamruimte: 'u1',
 	onjuistgebruik: 'u2',
 	tbx: 's1',
-	verplaatsing: 's2'
+	verplaatsing: 's2',
+	redirect: 's3'
 };
 
 Twinkle.speedy.templateReason = {
@@ -617,7 +622,8 @@ Twinkle.speedy.templateReason = {
 	duplicaat: 'Onderwerp is reeds beschreven op: ',
 	eigennaamruimte: 'Verzoek in eigen naamruimte',
 	onjuistgebruik: 'Onjuist gebruik van gebruikersnaamruimte',
-	enigeauteur: 'Aanvraag door aanmaker (enige auteur)'
+	enigeauteur: 'Aanvraag door aanmaker (enige auteur)',
+	redirect: 'Doorverwijzing naar niet-bestaande of verwijderde pagina, overbodige of onjuiste doorverwijzing'
 };
 
 Twinkle.speedy.deleteReason = {
@@ -634,7 +640,8 @@ Twinkle.speedy.deleteReason = {
 	onjuistgebruik: 'onjuist gebruik van gebruikersnaamruimte',
 	tbx: 'afhandelen TBx nominatie',
 	verplaatsing: 'verplaatsing/naamwijziging',
-	enigeauteur: 'Aanvraag van aanmaker'
+	enigeauteur: 'Aanvraag van aanmaker',
+	redirect: 'Doorverwijzing naar niet-bestaande of verwijderde pagina, overbodige of onjuiste doorverwijzing'
 };
 
 
@@ -692,6 +699,8 @@ Twinkle.speedy.callbacks = {
 			// Check for already existing tags
 		} else if (Twinkle.speedy.hasCSD && params.warnUser && !confirm('De pagina heeft al een nominatie, dus de aanmaker is waarschijnlijk al gewaarschuwd.  Wil je de aanmaker ook voor deze nominatie waarschuwen?')) {
 			Morebits.status.info('Verwittig originele aanmaker', 'geannuleerd door gebruiker.');
+			initialContrib = null;
+		} else if (params.normalizeds.indexOf('s3') {
 			initialContrib = null;
 		}
 
