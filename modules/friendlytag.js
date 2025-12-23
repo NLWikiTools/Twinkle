@@ -755,7 +755,7 @@ Twinkle.tag.callbacks = {
 					mergeTalkPage.getPageText();
 					mergeTalkPage.getStatusElement().status('Samenvoeg-discussie opslaan...');
 					mergeTalkPage.setEditSummary('Voorstel: Samenvoegen van ' + params.talkDiscussionTitleLinked);
-					mergeTalkPage.setAppendText('* ' + params.talkDiscussionTitleLinked + ' - ' + params.mergeReason.trim() + ' - ~~~~');
+					mergeTalkPage.setAppendText('\n\n=== ' + params.talkDiscussionTitleLinked + ' === \n' + params.mergeReason.trim() + ' ~~~~');
 					mergeTalkPage.setChangeTags(Twinkle.changeTags);
 					mergeTalkPage.setWatchlist(Twinkle.getPref('watchMergeDiscussions'));
 					mergeTalkPage.append();
