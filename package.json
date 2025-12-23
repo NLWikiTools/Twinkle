@@ -58,6 +58,7 @@
 		"mediawiki-title": "^0.7.5",
 		"mocha": "^11.4.0",
 		"mock-mediawiki": "^1.4.0",
+		"mwn": "^3.0.1",
 		"oojs": "^6.0.0",
 		"prompt-sync": "^4.2.0",
 		"replace-in-file": "^6.3.5",
@@ -69,7 +70,6 @@
 	},
 	"dependencies": {
 		"minify": "^8.0.4",
-		"mwn": "^0.9.0",
 		"uglifyjs": "^2.4.11"
 	}
 }
