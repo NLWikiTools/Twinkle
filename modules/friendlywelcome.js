@@ -41,9 +41,9 @@ Twinkle.welcome = function friendlywelcome() {
 
 Twinkle.welcome.auto = function () {
 	// Use wgArticleId to check if the page exists
-	if (mw.config.get('wgArticleId') !== 0) {
+	/* if (mw.config.get('wgArticleId') !== 0) {
 		return;
-	}
+	} */
 
 	Twinkle.welcome.welcomeUser();
 };
@@ -59,10 +59,10 @@ Twinkle.welcome.normal = function () {
 		const $oldDiffUsernameLine = $('#mw-diff-otitle2');
 		const $newDiffUsernameLine = $('#mw-diff-ntitle2');
 		const $oldDiffHasRedlinkedTalkPage = $oldDiffUsernameLine
-			.find('span.mw-usertoollinks a.new:contains(overleg)')
+			.find('span.mw-usertoollinks a:contains(overleg)')
 			.first();
 		const $newDiffHasRedlinkedTalkPage = $newDiffUsernameLine
-			.find('span.mw-usertoollinks a.new:contains(overleg)')
+			.find('span.mw-usertoollinks a:contains(overleg)')
 			.first();
 
 		if (
@@ -167,6 +167,11 @@ Twinkle.welcome.welcomeUser = function welcomeUser() {
 		article: mw.util.getParamValue('vanarticle') || '',
 		mode: 'auto'
 	};
+
+	// If the page exists, force top placement
+	if (mw.config.get('wgArticleId') !== 0) {
+		params.top = true;
+	}
 
 	var userTalkPage =
 			mw.config.get('wgFormattedNamespaces')[3] +
@@ -509,14 +514,14 @@ Twinkle.welcome.callbacks = {
 		var text = pageobj.getPageText();
 
 		// abort if mode is auto and form is not empty
-		if (pageobj.exists() && params.mode === 'auto') {
+		/* if (pageobj.exists() && params.mode === 'auto') {
 			Morebits.status.info(
 				'Waarschuwing',
 				'Overlegpagina is niet leeg, sjabloon plaatsen afgebroken'
 			);
 			Morebits.wiki.actionCompleted.event();
 			return;
-		}
+		} */
 
 		var welcomeText = Twinkle.welcome.getTemplateWikitext(
 			params.type,
@@ -524,7 +529,7 @@ Twinkle.welcome.callbacks = {
 			params.article
 		);
 
-		if (Twinkle.getPref('topWelcomes')) {
+		if (Twinkle.getPref('topWelcomes') || params.top) {
 			text = welcomeText + '\n\n' + text;
 		} else {
 			text += '\n' + welcomeText;
