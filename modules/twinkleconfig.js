@@ -649,7 +649,7 @@ Twinkle.config.sections = [
 			{
 				name: 'quickWelcomeTemplate',
 				label: 'Sjabloon dat gebruikt wordt bij automatische verwelkoming',
-				helptip: 'Geef de sjabloonpaginanaam, zonder accolades. Een link naar de pagina zal automatisch toegevoegd worden.',
+				helptip: 'Geef de sjabloonpaginanaam, zonder accolades. Een link naar de pagina zal automatisch toegevoegd worden. Als het sjabloon gesubstitueerd moet worden, plaatst er dan <code>subst:</code> voor.',
 				type: 'string'
 			},
 			{
