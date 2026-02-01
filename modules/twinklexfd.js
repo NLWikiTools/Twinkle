@@ -707,6 +707,7 @@ Twinkle.xfd.callback.evaluate = function(e) {
 	var form = e.target;
 
 	var params = Morebits.quickForm.getInputData(form);
+	params.notifycreator = form.notifycreator.checked;
 
 	Morebits.simpleWindow.setButtonsEnabled(false);
 	Morebits.status.init(form);
