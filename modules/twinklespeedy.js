@@ -1281,9 +1281,7 @@ Twinkle.speedy.callback.evaluateSysop = function twinklespeedyCallbackEvaluateSy
 		}
 	});
 
-	var warnusertalk = form.warnusertalk.checked && normalizeds.some(function (norm) {
-		return Twinkle.getPref('warnUserOnSpeedyDelete').indexOf(norm) !== -1;
-	});
+	var warnusertalk = form.warnusertalk.checked;
 
 	var welcomeuser = warnusertalk && normalizeds.some(function (norm) {
 		return Twinkle.getPref('welcomeUserOnSpeedyDeletionNotification').indexOf(norm) !== -1;
@@ -1344,9 +1342,7 @@ Twinkle.speedy.callback.evaluateUser = function twinklespeedyCallbackEvaluateUse
 		return Twinkle.getPref('watchSpeedyPages').indexOf(csdCriteria) !== -1;
 	}) && Twinkle.getPref('watchSpeedyExpiry');
 
-	var notifyuser = form.notify.checked && normalizeds.some(function(norm) {
-		return Twinkle.getPref('notifyUserOnSpeedyDeletionNomination').indexOf(norm) !== -1;
-	});
+	var notifyuser = form.notify.checked;
 	var welcomeuser = notifyuser && normalizeds.some(function(norm) {
 		return Twinkle.getPref('welcomeUserOnSpeedyDeletionNotification').indexOf(norm) !== -1;
 	});
