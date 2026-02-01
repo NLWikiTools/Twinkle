@@ -102,7 +102,7 @@ if (isRegulier) {
 	});
 } else {
 	api = new mwn({
-		apiUrl: `https://${wiki}.wikipedia.beta.wmflabs.org/w/api.php`,
+		apiUrl: `https://${wiki}.wikipedia.beta.wmcloud.org/w/api.php`,
 		username: betausername,
 		password: betapassword
 	});
