@@ -195,8 +195,10 @@ Twinkle.block.processUserInfo = function twinkleblockProcessUserInfo(data, fn) {
 		Twinkle.block.userIsBot = !!userinfo.groupmemberships && userinfo.groupmemberships.map(function(e) {
 			return e.group;
 		}).indexOf('bot') !== -1;
+		Twinkle.block.isTemporary = /^~/.test(userinfo.name);
 	} else {
 		Twinkle.block.userIsBot = false;
+		Twinkle.block.isTemporary = false;
 	}
 
 	if (blockinfo) {
@@ -1345,6 +1347,10 @@ Twinkle.block.callback.evaluate = function twinkleblockCallbackEvaluate(e) {
 			return alert('Geef een blokkadeduur!');
 		} else if (Morebits.string.isInfinity(blockoptions.expiry) && !Twinkle.block.isRegistered) {
 			return alert('Een IP-adres kan niet voor onbepaalde tijd geblokkeerd worden!');
+		} else if (Morebits.string.isInfinity(blockoptions.expiry) && Twinkle.block.isTemporary) {
+			blockoptions.expiry = '90 days';
+			templateoptions.expiry = '90 days';
+			alert('Blokkadeduur voor tijdelijk account is automatisch aangepast van onbepaalde tijd naar 90 dagen.');
 		}
 		if (!blockoptions.reason) {
 			return alert('Geef een rede voor de blokkade!');
