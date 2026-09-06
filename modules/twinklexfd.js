@@ -242,6 +242,7 @@ Twinkle.xfd.callback.change_category = function twinklexfdCallbackChangeCategory
 			sjabloon_select.append({ type: 'option', label: 'Niet encyclopedisch', value: 'ne' });
 			sjabloon_select.append({ type: 'option', label: 'Woordenboekdefinitie', value: 'wb' });
 			sjabloon_select.append({ type: 'option', label: 'Promotionele uiting', value: 'reclame' });
+			sjabloon_select.append({ type: 'option', label: 'Marketing, AI-gegenereerd of zoekmachineoptimalisatie (SEO)', value: 'seo' });
 			sjabloon_select.append({ type: 'option', label: 'Schending auteursrechten', value: 'auteur' });
 
 			if ((mw.config.get('wgNamespaceNumber') === 2 /* Gebruiker: */ || mw.config.get('wgNamespaceNumber') === 3 /* Overleg gebruiker: */) && mw.config.exists('wgRelevantUserName')) {
@@ -362,6 +363,9 @@ Twinkle.xfd.callbacks = {
 					break;
 				case 'reclame':
 					text += '\'\'\'[[Wikipedia:Neutraal standpunt|POV]]\'\'\' &ndash; ' + params.reason + ' &ndash; ~~~~';
+					break;
+				case 'seo':
+					text += '\'\'\'[[Wikipedia:Zelfpromotie#Zoekmachineoptimalisatie_(SEO)_en_AI-manipulatie|AI/SEO]]\'\'\' &ndash; ' + params.reason + ' &ndash; ~~~~';
 					break;
 				case 'auteur':
 					text += '\'\'\'[[Wikipedia:Auteursrechten|AUT]]\'\'\' &ndash; ' + params.reason + ' &ndash; ~~~~';
