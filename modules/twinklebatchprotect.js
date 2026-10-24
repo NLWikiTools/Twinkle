@@ -287,7 +287,7 @@ Twinkle.batchprotect.callback.evaluate = function twinklebatchprotectCallbackEva
 	Morebits.status.init(form);
 
 	if (input.pages.length === 0) {
-		Morebits.status.error('Error', 'Niets te doen, afbreken...');
+		Morebits.status.error('Fout', 'Niets te doen, afbreken...');
 		return;
 	}
 

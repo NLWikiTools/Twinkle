@@ -446,7 +446,7 @@ Twinkle.batchdelete.callback.evaluate = function twinklebatchdeleteCallbackEvalu
 	Morebits.simpleWindow.setButtonsEnabled(false);
 	Morebits.status.init(form);
 	if (input.pages.length === 0) {
-		Morebits.status.error('Error', 'niets om te verwijderen, afbreken');
+		Morebits.status.error('Fout', 'niets om te verwijderen, afbreken');
 		return;
 	}
 

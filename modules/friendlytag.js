@@ -145,7 +145,7 @@ Twinkle.tag.callback = function friendlytagCallback() {
 			break;
 
 		default:
-			alert('Twinkle.tag: unknown mode ' + Twinkle.tag.mode);
+			alert('Twinkle.tag: onbekende modus ' + Twinkle.tag.mode);
 			break;
 	}
 
@@ -1004,7 +1004,7 @@ Twinkle.tag.callbacks = {
 		var miTest = /{{(multiple ?issues|article ?issues|mi)(?!\s*\|\s*section\s*=)[^}]+{/im.exec(pageText);
 
 		if (miTest && groupableTags.length > 0) {
-			Morebits.status.info('Info', 'Adding supported tags inside existing {{multiple issues}} tag');
+			Morebits.status.info('Info', 'Ondersteunde labels toevoegen binnen bestaand {{multiple issues}}-sjabloon');
 
 			tagText = '';
 			$.each(groupableTags, addTag);
@@ -1017,7 +1017,7 @@ Twinkle.tag.callbacks = {
 			addUngroupedTags();
 
 		} else if (params.group && !miTest && (groupableExistingTags.length + groupableTags.length) >= 2) {
-			Morebits.status.info('Info', 'Grouping supported tags inside {{multiple issues}}');
+			Morebits.status.info('Info', 'Ondersteunde labels groeperen binnen {{multiple issues}}');
 
 			tagText += '{{Multiple issues|\n';
 
@@ -1079,8 +1079,8 @@ Twinkle.tag.callbacks = {
 						}
 					});
 					if (!found) {
-						Morebits.status.warn('Info', 'Failed to find the existing {{' +
-						page.title.slice(9) + '}} on the page... skip repositioning');
+						Morebits.status.warn('Info', 'Kon het bestaande {{' +
+						page.title.slice(9) + '}} niet op de pagina vinden... herpositioneren overgeslagen');
 					}
 				});
 				addNewTagsToMI();
@@ -1128,14 +1128,14 @@ Twinkle.tag.callback.evaluate = function friendlytagCallbackEvaluate(e) {
 					return;
 				}
 				if ((params.mergeTagOther || params.mergeReason) && params.mergeTarget.indexOf('|') !== -1) {
-					alert('Tagging multiple articles in a merge, and starting a discussion for multiple articles, is not supported at the moment. Please turn off "tag other article", and/or clear out the "reason" box, and try again.');
+					alert('Het labelen van meerdere artikelen bij een samenvoeging, en het starten van een discussie voor meerdere artikelen, wordt op dit moment niet ondersteund. Zet "label ander artikel" uit en/of maak het vak "reden" leeg, en probeer het opnieuw.');
 					return;
 				}
 			}
 			break;
 
 		default:
-			alert('Twinkle.tag: unknown mode ' + Twinkle.tag.mode);
+			alert('Twinkle.tag: onbekende modus ' + Twinkle.tag.mode);
 			break;
 	}
 

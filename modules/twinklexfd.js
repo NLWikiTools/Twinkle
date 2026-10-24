@@ -614,7 +614,7 @@ Twinkle.xfd.callbacks = {
 			// Check for existing AfD tag, for the benefit of new page patrollers
 			var textNoAfd = text.replace(/{{\s*(wiu|ne|wb|auteur|reclame|weg|weg2|verwijderen)(?:\s*\||\s*}})/ig, '');
 			if (text !== textNoAfd) {
-				if (confirm('Een TBP sjabloon is al gevonden op dit artikel. Misschien was iemand sneller.  \nKlik op OK om de nominatie te vervangen met jouw nominatie (niet verstandig), of Cancel om je nominatie af te breken.')) {
+				if (confirm('Een TBP sjabloon is al gevonden op dit artikel. Misschien was iemand sneller.  \nKlik op OK om de nominatie te vervangen met jouw nominatie (niet verstandig), of op Annuleren om je nominatie af te breken.')) {
 					text = textNoAfd;
 				} else {
 					statelem.error('Artikel al genomineerd, en je hebt gekozen jouw nominatie af te breken');
@@ -747,17 +747,17 @@ Twinkle.xfd.callback.evaluate = function(e) {
 			if (params.xfdcat === 'tfm') { // Merge
 				// Tag this template/module
 				if (params.scribunto) {
-					wikipedia_page = new Morebits.wiki.page(mw.config.get('wgPageName') + '/doc', 'Tagging this module documentation with merge tag');
+					wikipedia_page = new Morebits.wiki.page(mw.config.get('wgPageName') + '/doc', 'Moduledocumentatie labelen met samenvoegsjabloon');
 					params.otherTemplateName = 'Module:' + params.tfdtarget;
 				} else {
-					wikipedia_page = new Morebits.wiki.page(mw.config.get('wgPageName'), 'Tagging this template with merge tag');
+					wikipedia_page = new Morebits.wiki.page(mw.config.get('wgPageName'), 'Sjabloon labelen met samenvoegsjabloon');
 					params.otherTemplateName = 'Sjabloon:' + params.tfdtarget;
 				}
 			} else { // delete
 				if (params.scribunto) {
-					wikipedia_page = new Morebits.wiki.page(mw.config.get('wgPageName') + '/doc', 'Tagging module documentation with deletion tag');
+					wikipedia_page = new Morebits.wiki.page(mw.config.get('wgPageName') + '/doc', 'Moduledocumentatie labelen met verwijdersjabloon');
 				} else {
-					wikipedia_page = new Morebits.wiki.page(mw.config.get('wgPageName'), 'Tagging template with deletion tag');
+					wikipedia_page = new Morebits.wiki.page(mw.config.get('wgPageName'), 'Sjabloon labelen met verwijdersjabloon');
 				}
 			}
 			wikipedia_page.setFollowRedirect(true);  // should never be needed, but if the page is moved, we would want to follow the redirect
@@ -789,14 +789,14 @@ Twinkle.xfd.callback.evaluate = function(e) {
 			params.action = summaryActions[params.xfdcat];
 
 			// Tagging category
-			wikipedia_page = new Morebits.wiki.page(mw.config.get('wgPageName'), 'Tagging category with ' + params.action + ' tag');
+			wikipedia_page = new Morebits.wiki.page(mw.config.get('wgPageName'), 'Categorie labelen met ' + params.action + '-sjabloon');
 			wikipedia_page.setFollowRedirect(true); // should never be needed, but if the page is moved, we would want to follow the redirect
 			wikipedia_page.setCallbackParameters(params);
 			wikipedia_page.load(Twinkle.xfd.callbacks.cfd.main);
 			break;
 
 		default:
-			alert('twinklexfd: unknown XFD discussion venue');
+			alert('twinklexfd: onbekende discussieplaats voor verwijdernominatie');
 			break;
 	}
 };

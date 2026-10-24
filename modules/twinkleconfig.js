@@ -1053,7 +1053,7 @@ Twinkle.config.init = function twinkleconfigInit() {
 						break;
 
 					default:
-						alert('twinkleconfig: unknown data type for preference ' + pref.name);
+						alert('twinkleconfig: onbekend datatype voor voorkeur ' + pref.name);
 						break;
 				}
 				row.appendChild(cell);
@@ -1493,7 +1493,7 @@ Twinkle.config.writePrefs = function twinkleconfigWritePrefs(pageobj) {
 							break;
 
 						default:
-							alert('twinkleconfig: onbekend data type voor voorkeur ' + pref.name);
+							alert('twinkleconfig: onbekend datatype voor voorkeur ' + pref.name);
 							break;
 					}
 				} else if (Twinkle.prefs) {
@@ -1538,7 +1538,7 @@ Twinkle.config.writePrefs = function twinkleconfigWritePrefs(pageobj) {
 };
 
 Twinkle.config.saveSuccess = function twinkleconfigSaveSuccess(pageobj) {
-	pageobj.getStatusElement().info('done');
+	pageobj.getStatusElement().info('klaar');
 
 	var noticebox = document.createElement('div');
 	noticebox.className = 'successbox';
