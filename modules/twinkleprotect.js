@@ -331,6 +331,9 @@ Twinkle.protect.callback.changeAction = function twinkleprotectCallbackChangeAct
 	var field1;
 	var field2;
 
+	// field2 is rebuilt with the WP:BV checkbox unchecked, so drop stale annotations
+	Twinkle.protect.protectReasonAnnotations = [];
+
 	switch (e.target.values) {
 		case 'protect':
 			field_preset = new Morebits.quickForm.element({ type: 'field', label: 'Voorinstelling', name: 'field_preset' });
@@ -502,7 +505,6 @@ Twinkle.protect.callback.changeAction = function twinkleprotectCallbackChangeAct
 			});
 			field2.append({
 				type: 'input',
-				event: Twinkle.protect.callback.annotateProtectReason,
 				label: 'WP:BV-revisienummer (optioneel)',
 				name: 'protectReason_notes_rfppRevid',
 				value: '',
@@ -574,7 +576,9 @@ Twinkle.protect.callback.changeAction = function twinkleprotectCallbackChangeAct
 
 		// reduce vertical height of dialog
 		$(e.target.form).find('fieldset[name="field2"] select').parent().css({ display: 'inline-block', marginRight: '0.5em' });
-		$(e.target.form).find('fieldset[name="field2"] input[name="protectReason_notes_rfppRevid"]').parent().css({display: 'inline-block', marginLeft: '15px'}).hide();
+		// 'input' instead of keyup, so pasting with the mouse is caught as well
+		$(e.target.form).find('fieldset[name="field2"] input[name="protectReason_notes_rfppRevid"]').on('input', Twinkle.protect.callback.annotateProtectReason)
+			.parent().css({display: 'inline-block', marginLeft: '15px'}).hide();
 	}
 
 	// re-add protection level and log info, if it's available
