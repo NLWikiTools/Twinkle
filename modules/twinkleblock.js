@@ -349,7 +349,7 @@ Twinkle.block.callback.change_action = function twinkleblockCallbackChangeAction
 
 		// Always ensure proper template exists/is selected when switching modes
 		if (partialBox) {
-			Twinkle.block.blockPresetsInfo.prior.templateName = Morebits.string.isInfinity(Twinkle.block.currentBlockInfo.expiry) ? 'uw-pblockindef' : 'uw-pblock';
+			Twinkle.block.blockPresetsInfo.prior.templateName = 'deelblok';
 		} else {
 			if (!Twinkle.block.isRegistered) {
 				Twinkle.block.blockPresetsInfo.prior.templateName = 'tablok';
@@ -1494,6 +1494,11 @@ Twinkle.block.callback.issue_template = function twinkleblockCallbackIssueTempla
 };
 
 Twinkle.block.callback.getBlockNoticeWikitext = function(params) {
+	// nlwiki has no template for partial blocks, so the notice is written out in full
+	if (params.partial) {
+		return Twinkle.block.callback.getPartialBlockNoticeWikitext(params);
+	}
+
 	var text = '\n{{', settings = Twinkle.block.blockPresetsInfo[params.template];
 	if (!settings.nonstandard) {
 		if (params.template === 'ogbedrijf') {
@@ -1532,44 +1537,6 @@ Twinkle.block.callback.getBlockNoticeWikitext = function(params) {
 		if (params.disabletalk) {
 			text += '|overlegblok=true';
 		}
-
-		// Currently, all partial block templates are "standard"
-		// Building the template, however, takes a fair bit of logic
-		if (params.partial) {
-			if (params.pagerestrictions.length || params.namespacerestrictions.length) {
-				var makeSentence = function (array) {
-					if (array.length < 3) {
-						return array.join(' en ');
-					}
-					var last = array.pop();
-					return array.join(', ') + ', en ' + last;
-
-				};
-				text += '|gebied=' + (params.indefinite ? 'bepaalde ' : 'van bepaalde ');
-				if (params.pagerestrictions.length) {
-					text += 'pagina\'s (' + makeSentence(params.pagerestrictions.map(function(p) {
-						return '[[:' + p + ']]';
-					}));
-					text += params.namespacerestrictions.length ? ') en bepaalde ' : ')';
-				}
-				if (params.namespacerestrictions.length) {
-					// 1 => Talk, 2 => User, etc.
-					var namespaceNames = params.namespacerestrictions.map(function(id) {
-						return menuFormattedNamespaces[id];
-					});
-					text += '[[Help:Naamruimte|naamruimes]] (' + makeSentence(namespaceNames) + ')';
-				}
-			} else if (params.area) {
-				text += '|gebied=' + params.area;
-			} else {
-				if (params.noemail) {
-					text += '|email=ja';
-				}
-				if (params.nocreate) {
-					text += '|accountaanmaak=ja';
-				}
-			}
-		}
 	} else {
 		text += params.template;
 	}
@@ -1577,6 +1544,94 @@ Twinkle.block.callback.getBlockNoticeWikitext = function(params) {
 	text += '}}';
 
 	if (settings.sig && params.template !== 'ogbedrijf') {
+		text += ' ' + settings.sig;
+	}
+
+	return text;
+};
+
+// Durations as translated by {{Blok}}
+Twinkle.block.durationLabels = {
+	'1 hour': '1 uur',
+	'3 hours': '3 uur',
+	'6 hours': '6 uur',
+	'12 hours': '12 uur',
+	'24 hours': '1 dag',
+	'31 hours': '31 uur',
+	'36 hours': '36 uur',
+	'48 hours': '2 dagen',
+	'72 hours': '3 dagen',
+	'1 week': '1 week',
+	'2 weeks': '2 weken',
+	'1 month': '1 maand',
+	'3 months': '3 maanden',
+	'6 months': '6 maanden',
+	'1 year': '1 jaar',
+	'2 years': '2 jaar',
+	'3 years': '3 jaar'
+};
+
+Twinkle.block.callback.getPartialBlockNoticeWikitext = function(params) {
+	var settings = Twinkle.block.blockPresetsInfo[params.template];
+	var makeSentence = function (array) {
+		if (array.length < 3) {
+			return array.join(' en ');
+		}
+		var last = array.pop();
+		return array.join(', ') + ' en ' + last;
+	};
+
+	var duration;
+	if (params.indefinite) {
+		duration = 'voor onbepaalde tijd';
+	} else if (params.blank_duration || /te?mp|^\s*$|min/.exec(params.expiry) || new Morebits.date(params.expiry).isValid()) {
+		duration = 'tijdelijk';
+	} else {
+		duration = 'voor ' + (Twinkle.block.durationLabels[params.expiry] || params.expiry);
+	}
+
+	var restrictions = [];
+	if (params.pagerestrictions.length) {
+		restrictions.push('het bewerken van ' + (params.pagerestrictions.length > 1 ? 'de pagina\'s ' : 'de pagina ') +
+			makeSentence(params.pagerestrictions.map(function(p) {
+				return '[[:' + p + ']]';
+			})));
+	}
+	if (params.namespacerestrictions.length) {
+		// 1 => Talk, 2 => User, etc.
+		restrictions.push('het bewerken in ' + (params.namespacerestrictions.length > 1 ? 'de [[Help:Naamruimte|naamruimtes]] ' : 'de [[Help:Naamruimte|naamruimte]] ') +
+			makeSentence(params.namespacerestrictions.map(function(id) {
+				return menuFormattedNamespaces[id];
+			})));
+	}
+	if (!restrictions.length && params.area) {
+		restrictions.push('het bewerken van pagina\'s over ' + params.area);
+	}
+	if (params.noemail) {
+		restrictions.push('het versturen van e-mail aan andere gebruikers');
+	}
+	if (params.nocreate) {
+		restrictions.push('het aanmaken van nieuwe accounts');
+	}
+
+	var isIP = !Twinkle.block.isRegistered && !params.hardblock;
+	var text = '\n' + (isIP ? 'Een anonieme gebruiker met dit IP-adres is' : 'U bent') + ' \'\'\'' + duration + ' gedeeltelijk geblokkeerd\'\'\'';
+	if (params.reason) {
+		text += ' wegens ' + params.reason;
+	}
+	if (params.article && settings.pageParam) {
+		text += ' op [[:' + params.article + ']]';
+	}
+	text += '.';
+	if (restrictions.length) {
+		text += ' De blokkade geldt voor ' + makeSentence(restrictions) + '.';
+	}
+	text += ' Andere bewerkingen ' + (isIP ? 'zijn met dit IP-adres' : 'kunt u') + ' wel ' + (isIP ? 'mogelijk' : 'doen') + '.';
+	if (params.disabletalk) {
+		text += ' Ik heb tevens uw toegang tot uw overlegpagina geblokkeerd.';
+	}
+
+	if (settings.sig) {
 		text += ' ' + settings.sig;
 	}
 
