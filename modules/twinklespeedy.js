@@ -700,7 +700,11 @@ Twinkle.speedy.callbacks = {
 		} else if (Twinkle.speedy.hasCSD && params.warnUser && !confirm('De pagina heeft al een nominatie, dus de aanmaker is waarschijnlijk al gewaarschuwd.  Wil je de aanmaker ook voor deze nominatie waarschuwen?')) {
 			Morebits.status.info('Verwittig originele aanmaker', 'geannuleerd door gebruiker.');
 			initialContrib = null;
-		} else if (params.normalizeds.indexOf('s3')) {
+			// no notification for: aanvraag aanmaker (g10), TBx (s1), verplaatsing (s2), doorverwijzing (s3)
+		} else if (params.normalizeds.every(function(norm) {
+			return ['g10', 's1', 's2', 's3'].indexOf(norm) !== -1;
+		})) {
+			Morebits.status.info('Verwittig originele aanmaker', 'niet nodig voor deze reden; notificatie overgeslagen');
 			initialContrib = null;
 		}
 
