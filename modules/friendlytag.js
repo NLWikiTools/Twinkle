@@ -457,6 +457,12 @@ Twinkle.tag.article.tagList = {
 						parameter: '1',
 						type: 'select',
 						label: 'Categorie: ',
+						event: function(e) {
+							var land = e.target.form['tags.Land'];
+							if (land) {
+								land.disabled = e.target.value !== 'landen & volken';
+							}
+						},
 						list: [
 							{
 								type: 'optgroup',
@@ -511,7 +517,8 @@ Twinkle.tag.article.tagList = {
 								list: [
 									{ type: 'option', value: 'sport', label: 'Sport (algemeen)' },
 									{ type: 'option', value: 'autosport', label: 'Autosport' },
-									{ type: 'option', value: 'basketball', label: 'Basketball' },
+									{ type: 'option', value: 'basketbal', label: 'Basketbal' },
+									{ type: 'option', value: 'handbal', label: 'Handbal' },
 									{ type: 'option', value: 'hockey', label: 'Hockey' },
 									{ type: 'option', value: 'motorsport', label: 'Motorsport' },
 									{ type: 'option', value: 'voetbal', label: 'Voetbal' },
@@ -539,6 +546,15 @@ Twinkle.tag.article.tagList = {
 								]
 							}
 						]
+					},
+					{
+						name: 'Land',
+						parameter: 'land',
+						type: 'input',
+						label: 'Land (bij Landen & volken): ',
+						tooltip: 'Bijvoorbeeld: Portugal. Het beginnetje komt dan in de categorie van dat land.',
+						size: 20,
+						disabled: true
 					},
 					{
 						name: 'Jaar',
@@ -888,6 +904,10 @@ Twinkle.tag.callbacks = {
 				if (subgroupObj2) {
 					var subgroups2 = Array.isArray(subgroupObj2) ? subgroupObj2 : [ subgroupObj2 ];
 					subgroups2.forEach(function(gr) {
+						// {{Beginnetje}} only uses land= with "landen & volken"
+						if (gr.name === 'Land' && params.Categorie !== 'landen & volken') {
+							return;
+						}
 						if (gr.parameter && (params[gr.name] || gr.required)) {
 							pageText += '|' + gr.parameter + '=' + (params[gr.name] || '');
 						}
