@@ -147,7 +147,7 @@ Twinkle.batchundelete.callback.evaluate = function(event) {
 	Morebits.status.init(event.target);
 
 	if (!input.pages || !input.pages.length) {
-		Morebits.status.error('Error', 'niets om terug te zetten, Afbreken');
+		Morebits.status.error('Fout', 'niets om terug te zetten, Afbreken');
 		return;
 	}
 

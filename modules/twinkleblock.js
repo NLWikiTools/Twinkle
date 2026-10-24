@@ -262,7 +262,7 @@ Twinkle.block.fetchUserInfo = function twinkleblockFetchUserInfo(fn) {
 		Twinkle.block.processUserInfo(data, fn);
 	}, function(msg) {
 		Morebits.status.init($('div[name="currentblock"] span').last()[0]);
-		Morebits.status.warn('Error fetching user info', msg);
+		Morebits.status.warn('Fout bij ophalen van gebruikersinformatie', msg);
 	});
 };
 
@@ -1454,7 +1454,7 @@ Twinkle.block.callback.evaluate = function twinkleblockCallbackEvaluate(e) {
 			blockoptions.tags = Twinkle.changeTags;
 			blockoptions.token = mw.user.tokens.get('csrfToken');
 			var mbApi = new Morebits.wiki.api('Blokkade uitvoeren', blockoptions, function() {
-				statusElement.info('done');
+				statusElement.info('klaar');
 				if (toWarn) {
 					Twinkle.block.callback.issue_template(templateoptions);
 				}

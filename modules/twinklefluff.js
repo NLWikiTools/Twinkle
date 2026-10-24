@@ -520,7 +520,7 @@ Twinkle.fluff.callbacks = {
 		var lastuser = top.user;
 
 		if (lastrevid < params.revid) {
-			Morebits.status.error('Error', [ 'Het meest recente versienummer ontvangen van de server, ', Morebits.htmlNode('strong', lastrevid), ', is lager dan het versienummer van de weergegeven versie. Dit kan betekenen dat de huidige versie is verwijderd, de server achterloopt, of dat onjuiste data ontvangen is. Terugdraaiing afgebroken.' ]);
+			Morebits.status.error('Fout', [ 'Het meest recente versienummer ontvangen van de server, ', Morebits.htmlNode('strong', lastrevid), ', is lager dan het versienummer van de weergegeven versie. Dit kan betekenen dat de huidige versie is verwijderd, de server achterloopt, of dat onjuiste data ontvangen is. Terugdraaiing afgebroken.' ]);
 			return;
 		}
 
@@ -538,7 +538,7 @@ Twinkle.fluff.callbacks = {
 							diffUser ? ', welke op het zelfde /64 subnet zit' : '', '. Aangezien we vandalisme vermoeden, draaien we deze ook terug.' ]);
 						break;
 					default:
-						Morebits.status.warn('Note', [ 'Laatste bewerking was gemaakt door ', Morebits.htmlNode('strong', userNorm), ', maar we stoppen de terugdraaiing.' ]);
+						Morebits.status.warn('Let op', [ 'Laatste bewerking was gemaakt door ', Morebits.htmlNode('strong', userNorm), ', maar we stoppen de terugdraaiing.' ]);
 						return;
 				}
 			} else if (params.type === 'vand' &&
@@ -549,7 +549,7 @@ Twinkle.fluff.callbacks = {
 				Morebits.status.info('Info', [ 'Laatste bewerking was gemaakt door ', Morebits.htmlNode('strong', lastuser), ', een vertrouwde robot, maar de bewerking ervoor was door een vandaal, dus we gaan door met terugdraaien.' ]);
 				index = 2;
 			} else {
-				Morebits.status.error('Error', [ 'Laatste bewerking was gemaakt door ', Morebits.htmlNode('strong', lastuser), ', dus mogelijk is er al teruggedraaid, we stoppen de terugdraaiing.']);
+				Morebits.status.error('Fout', [ 'Laatste bewerking was gemaakt door ', Morebits.htmlNode('strong', lastuser), ', dus mogelijk is er al teruggedraaid, we stoppen de terugdraaiing.']);
 				return;
 			}
 
@@ -579,7 +579,7 @@ Twinkle.fluff.callbacks = {
 						params.userHidden = !!revs[1].userhidden;
 						userNorm = params.user || Twinkle.fluff.hiddenName;
 					} else {
-						Morebits.status.warn('Note', [ 'Terugdraaiing was gekozen op ', Morebits.htmlNode('strong', userNorm), '. Dit is een vertrouwde bot, maar per jouw besluit, zetten we de terugdraaiing door.' ]);
+						Morebits.status.warn('Let op', [ 'Terugdraaiing was gekozen op ', Morebits.htmlNode('strong', userNorm), '. Dit is een vertrouwde bot, maar per jouw besluit, zetten we de terugdraaiing door.' ]);
 					}
 					break;
 			}
@@ -594,7 +594,7 @@ Twinkle.fluff.callbacks = {
 				// Treat ipv6 users on same 64 block as the same
 				if (mw.util.isIPv6Address(revs[i].user) && Morebits.ip.get64(revs[i].user) === Morebits.ip.get64(params.user)) {
 					if (!seen64) {
-						new Morebits.status('Note', 'Behandel IPv6-adressen binnen hetzelfde /64-subnet als één gebruiker');
+						new Morebits.status('Let op', 'Behandel IPv6-adressen binnen hetzelfde /64-subnet als één gebruiker');
 						seen64 = true;
 					}
 					continue;
@@ -610,7 +610,7 @@ Twinkle.fluff.callbacks = {
 		}
 
 		if (!count) {
-			Morebits.status.error('Error', 'Aangezien het niet mogelijk is om 0 versies terug te draaien, breken we deze terugdraaiing af. Mogelijk is de terugdraaiing al uitgevoerd, terwijl het versienummer ongewijzigd is gebleven.');
+			Morebits.status.error('Fout', 'Aangezien het niet mogelijk is om 0 versies terug te draaien, breken we deze terugdraaiing af. Mogelijk is de terugdraaiing al uitgevoerd, terwijl het versienummer ongewijzigd is gebleven.');
 			return;
 		}
 
@@ -618,7 +618,7 @@ Twinkle.fluff.callbacks = {
 		var userHasAlreadyConfirmedAction = false;
 		if (params.type !== 'vand' && count > 1) {
 			if (!confirm(userNorm + ' heeft ' + mw.language.convertNumber(count) + ' achter elkaar gemaakt. Weet je zeker dat je die allemaal wil terugdraaien?')) {
-				Morebits.status.info('Note', 'Terugdraaien afgebroken.');
+				Morebits.status.info('Let op', 'Terugdraaien afgebroken.');
 				return;
 			}
 			userHasAlreadyConfirmedAction = true;
@@ -732,7 +732,7 @@ Twinkle.fluff.callbacks = {
 		} else if (edit.nochange) {
 			apiobj.statelem.error('Terug te draaien versie is identiek aan huidige versie, terugdraaiing afgebroken.');
 		} else {
-			apiobj.statelem.info('done');
+			apiobj.statelem.info('klaar');
 			var params = apiobj.params;
 
 			if (params.notifyUser && !params.userHidden) { // notifyUser only from main, not from toRevision

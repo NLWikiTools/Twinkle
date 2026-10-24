@@ -157,7 +157,7 @@ Twinkle.warn.callback = function twinklewarnCallback() {
 				format: 'json'
 			};
 
-			new Morebits.wiki.api('Checking if you successfully reverted the page', query, function(apiobj) {
+			new Morebits.wiki.api('Controleren of je de pagina succesvol hebt teruggedraaid', query, function(apiobj) {
 				var rev = apiobj.getResponse().query.pages[0].revisions;
 				var revertUser = rev && rev[1].user;
 				if (revertUser && revertUser !== mw.config.get('wgUserName')) {
@@ -522,7 +522,7 @@ Twinkle.warn.callback.change_category = function twinklewarnCallbackChangeCatego
 			}
 			break;
 		default:
-			alert('Waarschuwing onbekent in twinklewarn');
+			alert('Waarschuwing onbekend in twinklewarn');
 			break;
 	}
 
