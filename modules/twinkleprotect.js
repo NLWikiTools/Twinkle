@@ -1040,7 +1040,7 @@ Twinkle.protect.callback.evaluate = function twinkleprotectCallbackEvaluate(e) {
 
 			var allDone = function twinkleprotectCallbackAllDone() {
 				if (thispage) {
-					thispage.getStatusElement().info('done');
+					thispage.getStatusElement().info('klaar');
 				}
 			};
 
@@ -1089,10 +1089,10 @@ Twinkle.protect.callback.evaluate = function twinkleprotectCallbackEvaluate(e) {
 
 			var stabilizeIt = function twinkleprotectCallbackStabilizeIt() {
 				if (thispage) {
-					thispage.getStatusElement().info('done');
+					thispage.getStatusElement().info('klaar');
 				}
 
-				thispage = new Morebits.wiki.page(mw.config.get('wgPageName'), 'Applying pending changes protection');
+				thispage = new Morebits.wiki.page(mw.config.get('wgPageName'), 'Wijzigingen-ter-controlebeveiliging toepassen');
 				thispage.setFlaggedRevs(input.pclevel, input.pcexpiry);
 
 				if (input.protectReason) {
@@ -1111,7 +1111,7 @@ Twinkle.protect.callback.evaluate = function twinkleprotectCallbackEvaluate(e) {
 				thispage.setWatchlist(Twinkle.getPref('watchProtectedPages'));
 				thispage.stabilize(allDone, function(error) {
 					if (error.errorCode === 'stabilize_denied') { // [[phab:T234743]]
-						thispage.getStatusElement().error('Failed trying to modify pending changes settings, likely due to a mediawiki bug. Other actions (tagging or regular protection) may have taken place. Please reload the page and try again.');
+						thispage.getStatusElement().error('Wijzigen van de instellingen voor wijzigingen ter controle mislukt, waarschijnlijk door een MediaWiki-bug. Andere acties (labelen of gewone beveiliging) zijn mogelijk wel uitgevoerd. Herlaad de pagina en probeer het opnieuw.');
 					}
 				});
 			};
@@ -1281,7 +1281,7 @@ Twinkle.protect.callback.evaluate = function twinkleprotectCallbackEvaluate(e) {
 			rppPage.load(Twinkle.protect.callbacks.fileRequest);
 			break;
 		default:
-			alert('twinkleprotect: unknown kind of action');
+			alert('twinkleprotect: onbekend soort actie');
 			break;
 	}
 };
@@ -1338,7 +1338,7 @@ Twinkle.protect.callbacks = {
 
 		var newtag = '== [[:' + Morebits.pageNameNorm + ']] ==\n';
 		if (new RegExp('^' + mw.util.escapeRegExp(newtag).replace(/\s+/g, '\\s*'), 'm').test(text)) {
-			statusElement.error([ 'Er is al een verzoek voor deze pagina op  ', rppLink, ', afbreken.' ]);
+			statusElement.error([ 'Er is al een verzoek voor deze pagina op ', rppLink, ', afbreken.' ]);
 			return;
 		}
 		// newtag += '* {{pagelinks|1=' + Morebits.pageNameNorm + '}}\n\n';
@@ -1368,8 +1368,8 @@ Twinkle.protect.callbacks = {
 		if (text.length === originalTextLength) {
 			var linknode = document.createElement('a');
 			linknode.setAttribute('href', mw.util.getUrl('Wikipedia:Twinkle/Fixing RPP'));
-			linknode.appendChild(document.createTextNode('How to fix RPP'));
-			statusElement.error([ 'Could not find relevant heading on WP:RPP. To fix this problem, please see ', linknode, '.' ]);
+			linknode.appendChild(document.createTextNode('Hoe RPP te repareren'));
+			statusElement.error([ 'Kon de relevante kop op WP:RPP niet vinden. Zie ', linknode, ' om dit probleem op te lossen.' ]);
 			return;
 		}
 		statusElement.status('Nieuw verzoek toevoegen...');

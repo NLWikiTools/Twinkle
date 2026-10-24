@@ -814,7 +814,7 @@ Twinkle.speedy.callbacks = {
 				thispage.setChangeTags(Twinkle.changeTags);
 				thispage.setWatchlist(params.watch);
 				thispage.deletePage(function() {
-					thispage.getStatusElement().info('done');
+					thispage.getStatusElement().info('klaar');
 					typeof callback === 'function' && callback();
 					Twinkle.speedy.callbacks.sysop.deleteTalk(params);
 				});

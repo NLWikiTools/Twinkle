@@ -728,7 +728,7 @@ Morebits.quickForm.element.prototype.compute = function QuickFormElementCompute(
 			if (data.remove) {
 				var remove = this.compute({
 					type: 'button',
-					label: 'remove',
+					label: 'verwijderen',
 					event: function(e) {
 						var list = e.target.listnode;
 						var node = e.target.inputnode;
@@ -2304,7 +2304,7 @@ Morebits.wiki.api = function(currentAction, query, onSuccess, statusElement, onE
 	} else if (query.format === 'json' && !query.formatversion) {
 		this.query.formatversion = '2';
 	} else if (['xml', 'json'].indexOf(query.format) === -1) {
-		this.statelem.error('Invalid API format: only xml and json are supported.');
+		this.statelem.error('Ongeldig API-formaat: alleen xml en json worden ondersteund.');
 	}
 
 	// Ignore tags for queries and most common unsupported actions, produces warnings
@@ -2405,7 +2405,7 @@ Morebits.wiki.api.prototype = {
 					// as the first argument to the callback (for legacy code)
 					this.onSuccess.call(this.parent, this);
 				} else {
-					this.statelem.info('done');
+					this.statelem.info('klaar');
 				}
 
 				Morebits.wiki.actionCompleted();
@@ -2417,7 +2417,7 @@ Morebits.wiki.api.prototype = {
 			function onAPIfailure(jqXHR, statusText, errorThrown) {
 				this.statusText = statusText;
 				this.errorThrown = errorThrown; // frequently undefined
-				this.errorText = statusText + ' "' + jqXHR.statusText + '" occurred while contacting the API.';
+				this.errorText = statusText + ' "' + jqXHR.statusText + '" opgetreden bij het contact met de API.';
 				return this.returnError();
 			}
 
@@ -2426,7 +2426,7 @@ Morebits.wiki.api.prototype = {
 
 	returnError: function(callerAjaxParameters) {
 		if (this.errorCode === 'badtoken' && !this.badtokenRetry) {
-			this.statelem.warn('Invalid token. Getting a new token and retrying...');
+			this.statelem.warn('Ongeldig token. Nieuw token ophalen en opnieuw proberen...');
 			this.badtokenRetry = true;
 			// Get a new CSRF token and retry. If the original action needs a different
 			// type of action than CSRF, we do one pointless retry before bailing out
@@ -2530,7 +2530,7 @@ var morebitsWikiChangeTag = '';
 	 * @returns {string} MediaWiki CSRF token.
 	 */
 Morebits.wiki.api.getToken = function() {
-	var tokenApi = new Morebits.wiki.api('Getting token', {
+	var tokenApi = new Morebits.wiki.api('Token ophalen', {
 		action: 'query',
 		meta: 'tokens',
 		type: 'csrf',
@@ -2724,7 +2724,7 @@ Morebits.wiki.page = function(pageName, status) {
 
 		// Need to be able to do something after the page loads
 		if (!onSuccess) {
-			ctx.statusElement.error('Internal error: no onSuccess callback provided to load()!');
+			ctx.statusElement.error('Interne fout: geen onSuccess-callback meegegeven aan load()!');
 			ctx.onLoadFailure(this);
 			return;
 		}
@@ -2786,7 +2786,7 @@ Morebits.wiki.page = function(pageName, status) {
 		var canUseMwUserToken = fnCanUseMwUserToken('edit');
 
 		if (!ctx.pageLoaded && !canUseMwUserToken) {
-			ctx.statusElement.error('Internal error: attempt to save a page that has not been loaded!');
+			ctx.statusElement.error('Interne fout: poging om een pagina op te slaan die niet geladen is!');
 			ctx.onSaveFailure(this);
 			return;
 		}
@@ -2797,7 +2797,7 @@ Morebits.wiki.page = function(pageName, status) {
 			if (ctx.editMode === 'new' && ctx.newSectionTitle) {
 				ctx.editSummary = '';
 			} else {
-				ctx.statusElement.error('Internal error: edit summary not set before save!');
+				ctx.statusElement.error('Interne fout: bewerkingssamenvatting niet ingesteld voor het opslaan!');
 				ctx.onSaveFailure(this);
 				return;
 			}
@@ -2807,16 +2807,12 @@ Morebits.wiki.page = function(pageName, status) {
 		if (ctx.fullyProtected && !ctx.suppressProtectWarning &&
 				!confirm(
 					ctx.fullyProtected === 'infinity'
-						? msg('protected-indef-edit-warning', ctx.pageName,
-							'Je staat op het punt een volledig beveildige pagina te bewerken "' + ctx.pageName + '" (permanent beveiligd).  \n\nKlik op OK om door te gaan, of Cancel om de bewerking af te breken.'
-						)
-						: msg('protected-edit-warning', ctx.pageName, ctx.fullyProtected,
-							'Je staat op het punt een volledig beveildige pagina te bewerken "' + ctx.pageName +
-						'" (beveiliging verloopt op ' + new Morebits.date(ctx.fullyProtected).calendar('utc') + ' (UTC)).  \n\nKlik op OK om door te gaan, of Cancel om de bewerking af te breken.'
-						)
+						? 'Je staat op het punt een volledig beveiligde pagina te bewerken "' + ctx.pageName + '" (permanent beveiligd).  \n\nKlik op OK om door te gaan, of op Annuleren om de bewerking af te breken.'
+						: 'Je staat op het punt een volledig beveiligde pagina te bewerken "' + ctx.pageName +
+						'" (beveiliging verloopt op ' + new Morebits.date(ctx.fullyProtected).calendar('utc') + ' (UTC)).  \n\nKlik op OK om door te gaan, of op Annuleren om de bewerking af te breken.'
 				)
 		) {
-			ctx.statusElement.error(msg('protected-aborted', 'Bewerken van volledig beveiligde pagina afgebroken.'));
+			ctx.statusElement.error('Bewerken van volledig beveiligde pagina afgebroken.');
 			ctx.onSaveFailure(this);
 			return;
 		}
@@ -2858,7 +2854,7 @@ Morebits.wiki.page = function(pageName, status) {
 		switch (ctx.editMode) {
 			case 'append':
 				if (ctx.appendText === null) {
-					ctx.statusElement.error('Internal error: append text not set before save!');
+					ctx.statusElement.error('Interne fout: toe te voegen tekst niet ingesteld voor het opslaan!');
 					ctx.onSaveFailure(this);
 					return;
 				}
@@ -2866,7 +2862,7 @@ Morebits.wiki.page = function(pageName, status) {
 				break;
 			case 'prepend':
 				if (ctx.prependText === null) {
-					ctx.statusElement.error('Internal error: prepend text not set before save!');
+					ctx.statusElement.error('Interne fout: vooraan toe te voegen tekst niet ingesteld voor het opslaan!');
 					ctx.onSaveFailure(this);
 					return;
 				}
@@ -2874,7 +2870,7 @@ Morebits.wiki.page = function(pageName, status) {
 				break;
 			case 'new':
 				if (!ctx.newSectionText) { // API doesn't allow empty new section text
-					ctx.statusElement.error('Internal error: new section text not set before save!');
+					ctx.statusElement.error('Interne fout: tekst voor nieuwe sectie niet ingesteld voor het opslaan!');
 					ctx.onSaveFailure(this);
 					return;
 				}
@@ -3225,7 +3221,7 @@ Morebits.wiki.page = function(pageName, status) {
 		 */
 	this.setFollowRedirect = function(followRedirect, followCrossNsRedirect) {
 		if (ctx.pageLoaded) {
-			ctx.statusElement.error('Internal error: cannot change redirect setting after the page has been loaded!');
+			ctx.statusElement.error('Interne fout: doorverwijzingsinstelling kan niet worden gewijzigd nadat de pagina is geladen!');
 			return;
 		}
 		ctx.followRedirect = followRedirect;
@@ -3442,7 +3438,7 @@ Morebits.wiki.page = function(pageName, status) {
 		ctx.onLookupCreationSuccess = onSuccess;
 		ctx.onLookupCreationFailure = onFailure || emptyFunction;
 		if (!onSuccess) {
-			ctx.statusElement.error('Internal error: no onSuccess callback provided to lookupCreation()!');
+			ctx.statusElement.error('Interne fout: geen onSuccess-callback meegegeven aan lookupCreation()!');
 			ctx.onLookupCreationFailure(this);
 			return;
 		}
@@ -3471,7 +3467,7 @@ Morebits.wiki.page = function(pageName, status) {
 			query.redirects = '';  // follow all redirects
 		}
 
-		ctx.lookupCreationApi = new Morebits.wiki.api('Retrieving page creation information', query, fnLookupCreationSuccess, ctx.statusElement, ctx.onLookupCreationFailure);
+		ctx.lookupCreationApi = new Morebits.wiki.api('Informatie over aanmaak van de pagina opvragen', query, fnLookupCreationSuccess, ctx.statusElement, ctx.onLookupCreationFailure);
 		ctx.lookupCreationApi.setParent(this);
 		ctx.lookupCreationApi.post();
 	};
@@ -3487,7 +3483,7 @@ Morebits.wiki.page = function(pageName, status) {
 		ctx.onSaveFailure = onFailure || emptyFunction;
 
 		if (!ctx.revertOldID) {
-			ctx.statusElement.error('Internal error: revision ID to revert to was not set before revert!');
+			ctx.statusElement.error('Interne fout: versie-ID om naar terug te draaien niet ingesteld voor het terugdraaien!');
 			ctx.onSaveFailure(this);
 			return;
 		}
@@ -3511,7 +3507,7 @@ Morebits.wiki.page = function(pageName, status) {
 		}
 
 		if (!ctx.moveDestination) {
-			ctx.statusElement.error('Internal error: destination page name was not set before move!');
+			ctx.statusElement.error('Interne fout: nieuwe paginanaam niet ingesteld voor het hernoemen!');
 			ctx.onMoveFailure(this);
 			return;
 		}
@@ -3521,7 +3517,7 @@ Morebits.wiki.page = function(pageName, status) {
 		} else {
 			var query = fnNeedTokenInfoQuery('move');
 
-			ctx.moveApi = new Morebits.wiki.api('retrieving token...', query, fnProcessMove, ctx.statusElement, ctx.onMoveFailure);
+			ctx.moveApi = new Morebits.wiki.api('token ophalen...', query, fnProcessMove, ctx.statusElement, ctx.onMoveFailure);
 			ctx.moveApi.setParent(this);
 			ctx.moveApi.post();
 		}
@@ -3560,7 +3556,7 @@ Morebits.wiki.page = function(pageName, status) {
 				format: 'json'
 			};
 
-			ctx.patrolApi = new Morebits.wiki.api('retrieving token...', patrolQuery, fnProcessPatrol);
+			ctx.patrolApi = new Morebits.wiki.api('token ophalen...', patrolQuery, fnProcessPatrol);
 			ctx.patrolApi.setParent(this);
 			ctx.patrolApi.post();
 		}
@@ -3596,7 +3592,7 @@ Morebits.wiki.page = function(pageName, status) {
 		} else {
 			var query = fnNeedTokenInfoQuery('delete');
 
-			ctx.deleteApi = new Morebits.wiki.api('retrieving token...', query, fnProcessDelete, ctx.statusElement, ctx.onDeleteFailure);
+			ctx.deleteApi = new Morebits.wiki.api('token ophalen...', query, fnProcessDelete, ctx.statusElement, ctx.onDeleteFailure);
 			ctx.deleteApi.setParent(this);
 			ctx.deleteApi.post();
 		}
@@ -3621,7 +3617,7 @@ Morebits.wiki.page = function(pageName, status) {
 		} else {
 			var query = fnNeedTokenInfoQuery('undelete');
 
-			ctx.undeleteApi = new Morebits.wiki.api('retrieving token...', query, fnProcessUndelete, ctx.statusElement, ctx.onUndeleteFailure);
+			ctx.undeleteApi = new Morebits.wiki.api('token ophalen...', query, fnProcessUndelete, ctx.statusElement, ctx.onUndeleteFailure);
 			ctx.undeleteApi.setParent(this);
 			ctx.undeleteApi.post();
 		}
@@ -3642,7 +3638,7 @@ Morebits.wiki.page = function(pageName, status) {
 		}
 
 		if (!ctx.protectEdit && !ctx.protectMove && !ctx.protectCreate) {
-			ctx.statusElement.error('Internal error: you must set edit and/or move and/or create protection before calling protect()!');
+			ctx.statusElement.error('Interne fout: stel bewerk-, hernoem- en/of aanmaakbeveiliging in voordat je protect() aanroept!');
 			ctx.onProtectFailure(this);
 			return;
 		}
@@ -3652,7 +3648,7 @@ Morebits.wiki.page = function(pageName, status) {
 		// protection levels from the server
 		var query = fnNeedTokenInfoQuery('protect');
 
-		ctx.protectApi = new Morebits.wiki.api('retrieving token...', query, fnProcessProtect, ctx.statusElement, ctx.onProtectFailure);
+		ctx.protectApi = new Morebits.wiki.api('token ophalen...', query, fnProcessProtect, ctx.statusElement, ctx.onProtectFailure);
 		ctx.protectApi.setParent(this);
 		ctx.protectApi.post();
 	};
@@ -3677,7 +3673,7 @@ Morebits.wiki.page = function(pageName, status) {
 		}
 
 		if (!ctx.flaggedRevs) {
-			ctx.statusElement.error('Internal error: you must set flaggedRevs before calling stabilize()!');
+			ctx.statusElement.error('Interne fout: stel flaggedRevs in voordat je stabilize() aanroept!');
 			ctx.onStabilizeFailure(this);
 			return;
 		}
@@ -3687,7 +3683,7 @@ Morebits.wiki.page = function(pageName, status) {
 		} else {
 			var query = fnNeedTokenInfoQuery('stabilize');
 
-			ctx.stabilizeApi = new Morebits.wiki.api('retrieving token...', query, fnProcessStabilize, ctx.statusElement, ctx.onStabilizeFailure);
+			ctx.stabilizeApi = new Morebits.wiki.api('token ophalen...', query, fnProcessStabilize, ctx.statusElement, ctx.onStabilizeFailure);
 			ctx.stabilizeApi.setParent(this);
 			ctx.stabilizeApi.post();
 		}
@@ -3810,13 +3806,13 @@ Morebits.wiki.page = function(pageName, status) {
 		}
 		ctx.csrfToken = response.tokens.csrftoken;
 		if (!ctx.csrfToken) {
-			ctx.statusElement.error('Failed to retrieve edit token.');
+			ctx.statusElement.error('Ophalen van bewerkingstoken mislukt.');
 			ctx.onLoadFailure(this);
 			return;
 		}
 		ctx.loadTime = ctx.loadApi.getResponse().curtimestamp;
 		if (!ctx.loadTime) {
-			ctx.statusElement.error('Failed to retrieve current timestamp.');
+			ctx.statusElement.error('Ophalen van huidige tijdstempel mislukt.');
 			ctx.onLoadFailure(this);
 			return;
 		}
@@ -3850,7 +3846,7 @@ Morebits.wiki.page = function(pageName, status) {
 		if (ctx.editMode === 'revert') {
 			ctx.revertCurID = rev && rev.revid;
 			if (!ctx.revertCurID) {
-				ctx.statusElement.error('Failed to retrieve current revision ID.');
+				ctx.statusElement.error('Ophalen van huidige versie-ID mislukt.');
 				ctx.onLoadFailure(this);
 				return;
 			}
@@ -3859,13 +3855,13 @@ Morebits.wiki.page = function(pageName, status) {
 				if (rev && rev.userhidden) {  // username was RevDel'd or oversighted
 					ctx.revertUser = '<username hidden>';
 				} else {
-					ctx.statusElement.error('Failed to retrieve user who made the revision.');
+					ctx.statusElement.error('Ophalen van de gebruiker die de versie maakte mislukt.');
 					ctx.onLoadFailure(this);
 					return;
 				}
 			}
 			// set revert edit summary
-			ctx.editSummary = '[[Help:Revert|Reverted]] to revision ' + ctx.revertOldID + ' by ' + ctx.revertUser + ': ' + ctx.editSummary;
+			ctx.editSummary = 'Teruggedraaid naar versie ' + ctx.revertOldID + ' van ' + ctx.revertUser + ': ' + ctx.editSummary;
 		}
 
 		ctx.pageLoaded = true;
@@ -3884,7 +3880,7 @@ Morebits.wiki.page = function(pageName, status) {
 		if (page) {
 			// check for invalid titles
 			if (page.invalid) {
-				ctx.statusElement.error('The page title is invalid: ' + ctx.pageName);
+				ctx.statusElement.error('De paginatitel is ongeldig: ' + ctx.pageName);
 				onFailure(this);
 				return false; // abort
 			}
@@ -3897,20 +3893,20 @@ Morebits.wiki.page = function(pageName, status) {
 				var origNs = new mw.Title(ctx.pageName).namespace;
 				var newNs = new mw.Title(resolvedName).namespace;
 				if (origNs !== newNs && !ctx.followCrossNsRedirect) {
-					ctx.statusElement.error(ctx.pageName + ' is a cross-namespace redirect to ' + resolvedName + ', aborted');
+					ctx.statusElement.error(ctx.pageName + ' is een doorverwijzing naar een andere naamruimte (' + resolvedName + '), afgebroken');
 					onFailure(this);
 					return false;
 				}
 
 				// only notify user for redirects, not normalization
-				new Morebits.status('Note', 'Redirected from ' + ctx.pageName + ' to ' + resolvedName);
+				new Morebits.status('Let op', 'Doorverwezen van ' + ctx.pageName + ' naar ' + resolvedName);
 			}
 
 			ctx.pageName = resolvedName; // update to redirect target or normalized name
 
 		} else {
 			// could be a circular redirect or other problem
-			ctx.statusElement.error('Could not resolve redirects for: ' + ctx.pageName);
+			ctx.statusElement.error('Kon doorverwijzingen niet volgen voor: ' + ctx.pageName);
 			onFailure(this);
 
 			// force error to stay on the screen
@@ -3975,7 +3971,7 @@ Morebits.wiki.page = function(pageName, status) {
 			var link = document.createElement('a');
 			link.setAttribute('href', mw.util.getUrl(ctx.pageName));
 			link.appendChild(document.createTextNode(ctx.pageName));
-			ctx.statusElement.info(['done (', link, ')']);
+			ctx.statusElement.info(['klaar (', link, ')']);
 			if (ctx.onSaveSuccess) {
 				ctx.onSaveSuccess(this);  // invoke callback
 			}
@@ -3985,9 +3981,9 @@ Morebits.wiki.page = function(pageName, status) {
 		// errors here are only generated by extensions which hook APIEditBeforeSave within MediaWiki,
 		// which as of 1.34.0-wmf.23 (Sept 2019) should only encompass captcha messages
 		if (response.edit.captcha) {
-			ctx.statusElement.error('Could not save the page because the wiki server wanted you to fill out a CAPTCHA.');
+			ctx.statusElement.error('Kon de pagina niet opslaan, omdat de wikiserver wilde dat je een CAPTCHA invulde.');
 		} else {
-			ctx.statusElement.error('Unknown error received from API while saving page');
+			ctx.statusElement.error('Onbekende fout van de API ontvangen bij het opslaan van de pagina');
 		}
 
 		// force error to stay on the screen
@@ -4009,10 +4005,10 @@ Morebits.wiki.page = function(pageName, status) {
 				titles: ctx.pageName  // redirects are already resolved
 			};
 
-			var purgeApi = new Morebits.wiki.api('Edit conflict detected, purging server cache', purgeQuery, function() {
+			var purgeApi = new Morebits.wiki.api('Bewerkingsconflict gedetecteerd, servercache legen', purgeQuery, function() {
 				--Morebits.wiki.numberOfActionsLeft;  // allow for normal completion if retry succeeds
 
-				ctx.statusElement.info('Edit conflict detected, reapplying edit');
+				ctx.statusElement.info('Bewerkingsconflict gedetecteerd, bewerking opnieuw toepassen');
 				if (fnCanUseMwUserToken('edit')) {
 					ctx.saveApi.post(); // necessarily append, prepend, or newSection, so this should work as desired
 				} else {
@@ -4040,15 +4036,15 @@ Morebits.wiki.page = function(pageName, status) {
 
 				case 'protectedpage':
 					// non-admin attempting to edit a protected page - this gives a friendlier message than the default
-					ctx.statusElement.error('Failed to save edit: Page is protected');
+					ctx.statusElement.error('Opslaan van bewerking mislukt: pagina is beveiligd');
 					break;
 
 				case 'abusefilter-disallowed':
-					ctx.statusElement.error('The edit was disallowed by the edit filter: "' + ctx.saveApi.getResponse().error.abusefilter.description + '".');
+					ctx.statusElement.error('De bewerking werd geweigerd door de bewerkingsfilter: "' + ctx.saveApi.getResponse().error.abusefilter.description + '".');
 					break;
 
 				case 'abusefilter-warning':
-					ctx.statusElement.error([ 'A warning was returned by the edit filter: "', ctx.saveApi.getResponse().error.abusefilter.description, '". If you wish to proceed with the edit, please carry it out again. This warning will not appear a second time.' ]);
+					ctx.statusElement.error([ 'De bewerkingsfilter gaf een waarschuwing: "', ctx.saveApi.getResponse().error.abusefilter.description, '". Als je de bewerking toch wilt doorvoeren, voer deze dan opnieuw uit. Deze waarschuwing verschijnt geen tweede keer.' ]);
 					// We should provide the user with a way to automatically retry the action if they so choose -
 					// I can't see how to do this without creating a UI dependency on Morebits.wiki.page though -- TTO
 					break;
@@ -4056,11 +4052,11 @@ Morebits.wiki.page = function(pageName, status) {
 				case 'spamblacklist':
 					// If multiple items are blacklisted, we only return the first
 					var spam = ctx.saveApi.getResponse().error.spamblacklist.matches[0];
-					ctx.statusElement.error('Could not save the page because the URL ' + spam + ' is on the spam blacklist');
+					ctx.statusElement.error('Kon de pagina niet opslaan, omdat de URL ' + spam + ' op de spamzwartelijst staat');
 					break;
 
 				default:
-					ctx.statusElement.error('Failed to save edit: ' + ctx.saveApi.getErrorText());
+					ctx.statusElement.error('Opslaan van bewerking mislukt: ' + ctx.saveApi.getErrorText());
 			}
 
 			ctx.editMode = 'all';  // cancel append/prepend/newSection/revert modes
@@ -4088,7 +4084,7 @@ Morebits.wiki.page = function(pageName, status) {
 
 		var rev = response.pages[0].revisions && response.pages[0].revisions[0];
 		if (!rev) {
-			ctx.statusElement.error('Could not find any revisions of ' + ctx.pageName);
+			ctx.statusElement.error('Kon geen versies vinden van ' + ctx.pageName);
 			ctx.onLookupCreationFailure(this);
 			return;
 		}
@@ -4097,13 +4093,13 @@ Morebits.wiki.page = function(pageName, status) {
 
 			ctx.creator = rev.user;
 			if (!ctx.creator) {
-				ctx.statusElement.error('Could not find name of page creator');
+				ctx.statusElement.error('Kon de naam van de aanmaker van de pagina niet vinden');
 				ctx.onLookupCreationFailure(this);
 				return;
 			}
 			ctx.timestamp = rev.timestamp;
 			if (!ctx.timestamp) {
-				ctx.statusElement.error('Could not find timestamp of page creation');
+				ctx.statusElement.error('Kon het tijdstip van aanmaak van de pagina niet vinden');
 				ctx.onLookupCreationFailure(this);
 				return;
 			}
@@ -4140,19 +4136,19 @@ Morebits.wiki.page = function(pageName, status) {
 			ctx.creator = revs[0].user;
 			ctx.timestamp = revs[0].timestamp;
 			if (!ctx.creator) {
-				ctx.statusElement.error('Could not find name of page creator');
+				ctx.statusElement.error('Kon de naam van de aanmaker van de pagina niet vinden');
 				ctx.onLookupCreationFailure(this);
 				return;
 			}
 
 		}
 		if (!ctx.timestamp) {
-			ctx.statusElement.error('Could not find timestamp of page creation');
+			ctx.statusElement.error('Kon het tijdstip van aanmaak van de pagina niet vinden');
 			ctx.onLookupCreationFailure(this);
 			return;
 		}
 
-		ctx.statusElement.info('retrieved page creation information');
+		ctx.statusElement.info('informatie over aanmaak van de pagina opgevraagd');
 		ctx.onLookupCreationSuccess(this);
 
 	};
@@ -4165,16 +4161,26 @@ Morebits.wiki.page = function(pageName, status) {
 		 * @param {string} onFailure - Failure callback.
 		 * @returns {boolean}
 		 */
+	// Nederlandse namen van de acties, voor gebruik in statusmeldingen
+	var actionNames = {
+		'delete': 'verwijderen',
+		undelete: 'terugplaatsen',
+		move: 'hernoemen',
+		protect: 'beveiligen',
+		stabilize: 'stabiliseren'
+	};
+
 	var fnPreflightChecks = function(action, onFailure) {
+		var actionName = actionNames[action] || action;
 		// if a non-admin tries to do this, don't bother
 		if (!Morebits.userIsSysop && action !== 'move') {
-			ctx.statusElement.error('Cannot ' + action + 'page : only admins can do that');
+			ctx.statusElement.error('Kan pagina niet ' + actionName + ': alleen moderatoren kunnen dat');
 			onFailure(this);
 			return false;
 		}
 
 		if (!ctx.editSummary) {
-			ctx.statusElement.error('Internal error: ' + action + ' reason not set (use setEditSummary function)!');
+			ctx.statusElement.error('Interne fout: reden voor ' + actionName + ' niet ingesteld (gebruik de functie setEditSummary)!');
 			onFailure(this);
 			return false;
 		}
@@ -4191,6 +4197,7 @@ Morebits.wiki.page = function(pageName, status) {
 		 * @returns {boolean}
 		 */
 	var fnProcessChecks = function(action, onFailure, response) {
+		var actionName = actionNames[action] || action;
 		var missing = response.pages[0].missing;
 
 		// No undelete as an existing page could have deleted revisions
@@ -4199,7 +4206,7 @@ Morebits.wiki.page = function(pageName, status) {
 		var saltMissing = action === 'protect' && !missing && ctx.protectCreate;
 
 		if (actionMissing || protectMissing || saltMissing) {
-			ctx.statusElement.error('Cannot ' + action + ' the page because it ' + (missing ? 'no longer' : 'already') + ' exists');
+			ctx.statusElement.error('Kan de pagina niet ' + actionName + ', omdat deze ' + (missing ? 'niet meer' : 'al') + ' bestaat');
 			onFailure(this);
 			return false;
 		}
@@ -4217,16 +4224,16 @@ Morebits.wiki.page = function(pageName, status) {
 			}).pop();
 		}
 		if (editprot && !ctx.suppressProtectWarning &&
-				!confirm('You are about to ' + action + ' the fully protected page "' + ctx.pageName +
+				!confirm('Je staat op het punt de volledig beveiligde pagina "' + ctx.pageName +
 					(editprot.expiry === 'infinity' ? '" (onbepaalde tijd)' : '" (verloopt ' + new Morebits.date(editprot.expiry).calendar('utc') + ' (UTC))') +
-					'.  \n\nClick OK to proceed with ' + action + ', or Cancel to skip.')) {
-			ctx.statusElement.error('Aborted ' + action + ' on fully protected page.');
+					' te ' + actionName + '.  \n\nKlik op OK om door te gaan met ' + actionName + ', of op Annuleren om over te slaan.')) {
+			ctx.statusElement.error(actionName.charAt(0).toUpperCase() + actionName.slice(1) + ' van volledig beveiligde pagina afgebroken.');
 			onFailure(this);
 			return false;
 		}
 
 		if (!response.tokens.csrftoken) {
-			ctx.statusElement.error('Failed to retrieve token.');
+			ctx.statusElement.error('Ophalen van token mislukt.');
 			onFailure(this);
 			return false;
 		}
@@ -4278,7 +4285,7 @@ Morebits.wiki.page = function(pageName, status) {
 			query.noredirect = 'true';
 		}
 
-		ctx.moveProcessApi = new Morebits.wiki.api('moving page...', query, ctx.onMoveSuccess, ctx.statusElement, ctx.onMoveFailure);
+		ctx.moveProcessApi = new Morebits.wiki.api('pagina hernoemen...', query, ctx.onMoveSuccess, ctx.statusElement, ctx.onMoveFailure);
 		ctx.moveProcessApi.setParent(this);
 		ctx.moveProcessApi.post();
 	};
@@ -4317,9 +4324,9 @@ Morebits.wiki.page = function(pageName, status) {
 			query.tags = ctx.changeTags;
 		}
 
-		var patrolStat = new Morebits.status('Marking page as patrolled');
+		var patrolStat = new Morebits.status('Pagina als gecontroleerd markeren');
 
-		ctx.patrolProcessApi = new Morebits.wiki.api('patrolling page...', query, null, patrolStat);
+		ctx.patrolProcessApi = new Morebits.wiki.api('pagina controleren...', query, null, patrolStat);
 		ctx.patrolProcessApi.setParent(this);
 		ctx.patrolProcessApi.post();
 	};
@@ -4348,7 +4355,7 @@ Morebits.wiki.page = function(pageName, status) {
 			format: 'json'
 		};
 
-		ctx.triageProcessListApi = new Morebits.wiki.api('checking curation status...', query, fnProcessTriage);
+		ctx.triageProcessListApi = new Morebits.wiki.api('controlestatus nagaan...', query, fnProcessTriage);
 		ctx.triageProcessListApi.setParent(this);
 		ctx.triageProcessListApi.post();
 	};
@@ -4373,8 +4380,8 @@ Morebits.wiki.page = function(pageName, status) {
 				token: ctx.csrfToken,
 				format: 'json'
 			};
-			var triageStat = new Morebits.status('Marking page as curated');
-			ctx.triageProcessApi = new Morebits.wiki.api('curating page...', query, null, triageStat);
+			var triageStat = new Morebits.status('Pagina als nagekeken markeren');
+			ctx.triageProcessApi = new Morebits.wiki.api('pagina nakijken...', query, null, triageStat);
 			ctx.triageProcessApi.setParent(this);
 			ctx.triageProcessApi.post();
 		}
@@ -4415,7 +4422,7 @@ Morebits.wiki.page = function(pageName, status) {
 			query.watchlistexpiry = ctx.watchlistExpiry;
 		}
 
-		ctx.deleteProcessApi = new Morebits.wiki.api('deleting page...', query, ctx.onDeleteSuccess, ctx.statusElement, fnProcessDeleteError);
+		ctx.deleteProcessApi = new Morebits.wiki.api('pagina verwijderen...', query, ctx.onDeleteSuccess, ctx.statusElement, fnProcessDeleteError);
 		ctx.deleteProcessApi.setParent(this);
 		ctx.deleteProcessApi.post();
 	};
@@ -4427,18 +4434,18 @@ Morebits.wiki.page = function(pageName, status) {
 
 		// check for "Database query error"
 		if (errorCode === 'internal_api_error_DBQueryError' && ctx.retries++ < ctx.maxRetries) {
-			ctx.statusElement.info('Database query error, retrying');
+			ctx.statusElement.info('Databasefout, opnieuw proberen');
 			--Morebits.wiki.numberOfActionsLeft;  // allow for normal completion if retry succeeds
 			ctx.deleteProcessApi.post(); // give it another go!
 
 		} else if (errorCode === 'missingtitle') {
-			ctx.statusElement.error('Cannot delete the page, because it no longer exists');
+			ctx.statusElement.error('Kan de pagina niet verwijderen, omdat deze niet meer bestaat');
 			if (ctx.onDeleteFailure) {
 				ctx.onDeleteFailure.call(this, ctx.deleteProcessApi);  // invoke callback
 			}
 			// hard error, give up
 		} else {
-			ctx.statusElement.error('Failed to delete the page: ' + ctx.deleteProcessApi.getErrorText());
+			ctx.statusElement.error('Verwijderen van de pagina mislukt: ' + ctx.deleteProcessApi.getErrorText());
 			if (ctx.onDeleteFailure) {
 				ctx.onDeleteFailure.call(this, ctx.deleteProcessApi);  // invoke callback
 			}
@@ -4480,7 +4487,7 @@ Morebits.wiki.page = function(pageName, status) {
 			query.watchlistexpiry = ctx.watchlistExpiry;
 		}
 
-		ctx.undeleteProcessApi = new Morebits.wiki.api('undeleting page...', query, ctx.onUndeleteSuccess, ctx.statusElement, fnProcessUndeleteError);
+		ctx.undeleteProcessApi = new Morebits.wiki.api('pagina terugplaatsen...', query, ctx.onUndeleteSuccess, ctx.statusElement, fnProcessUndeleteError);
 		ctx.undeleteProcessApi.setParent(this);
 		ctx.undeleteProcessApi.post();
 	};
@@ -4493,23 +4500,23 @@ Morebits.wiki.page = function(pageName, status) {
 		// check for "Database query error"
 		if (errorCode === 'internal_api_error_DBQueryError') {
 			if (ctx.retries++ < ctx.maxRetries) {
-				ctx.statusElement.info('Database query error, retrying');
+				ctx.statusElement.info('Databasefout, opnieuw proberen');
 				--Morebits.wiki.numberOfActionsLeft;  // allow for normal completion if retry succeeds
 				ctx.undeleteProcessApi.post(); // give it another go!
 			} else {
-				ctx.statusElement.error('Repeated database query error, please try again');
+				ctx.statusElement.error('Herhaalde databasefout, probeer het opnieuw');
 				if (ctx.onUndeleteFailure) {
 					ctx.onUndeleteFailure.call(this, ctx.undeleteProcessApi);  // invoke callback
 				}
 			}
 		} else if (errorCode === 'cantundelete') {
-			ctx.statusElement.error('Cannot undelete the page, either because there are no revisions to undelete or because it has already been undeleted');
+			ctx.statusElement.error('Kan de pagina niet terugplaatsen, omdat er geen versies zijn om terug te plaatsen of omdat de pagina al is teruggeplaatst');
 			if (ctx.onUndeleteFailure) {
 				ctx.onUndeleteFailure.call(this, ctx.undeleteProcessApi);  // invoke callback
 			}
 			// hard error, give up
 		} else {
-			ctx.statusElement.error('Failed to undelete the page: ' + ctx.undeleteProcessApi.getErrorText());
+			ctx.statusElement.error('Terugplaatsen van de pagina mislukt: ' + ctx.undeleteProcessApi.getErrorText());
 			if (ctx.onUndeleteFailure) {
 				ctx.onUndeleteFailure.call(this, ctx.undeleteProcessApi);  // invoke callback
 			}
@@ -4567,10 +4574,10 @@ Morebits.wiki.page = function(pageName, status) {
 			// but seems reasonable to avoid dumb values and misleading log entries (T265626)
 			if (((!ctx.protectEdit || ctx.protectEdit.level !== 'sysop') ||
 					(!ctx.protectMove || ctx.protectMove.level !== 'sysop')) &&
-					!confirm('You have cascading protection enabled on "' + ctx.pageName +
-						'" but have not selected uniform sysop-level protection.\n\n' +
-						'Click OK to adjust and proceed with sysop-level cascading protection, or Cancel to skip this action.')) {
-				ctx.statusElement.error('Cascading protection was aborted.');
+					!confirm('Je hebt cascadebeveiliging ingeschakeld op "' + ctx.pageName +
+						'", maar hebt niet overal beveiliging op moderatorniveau gekozen.\n\n' +
+						'Klik op OK om dit aan te passen en door te gaan met cascadebeveiliging op moderatorniveau, of op Annuleren om deze actie over te slaan.')) {
+				ctx.statusElement.error('Cascadebeveiliging afgebroken.');
 				ctx.onProtectFailure(this);
 				return;
 			}
@@ -4618,7 +4625,7 @@ Morebits.wiki.page = function(pageName, status) {
 			query.cascade = 'true';
 		}
 
-		ctx.protectProcessApi = new Morebits.wiki.api('protecting page...', query, ctx.onProtectSuccess, ctx.statusElement, ctx.onProtectFailure);
+		ctx.protectProcessApi = new Morebits.wiki.api('pagina beveiligen...', query, ctx.onProtectSuccess, ctx.statusElement, ctx.onProtectFailure);
 		ctx.protectProcessApi.setParent(this);
 		ctx.protectProcessApi.post();
 	};
@@ -4662,7 +4669,7 @@ Morebits.wiki.page = function(pageName, status) {
 		}
 		*/
 
-		ctx.stabilizeProcessApi = new Morebits.wiki.api('configuring stabilization settings...', query, ctx.onStabilizeSuccess, ctx.statusElement, ctx.onStabilizeFailure);
+		ctx.stabilizeProcessApi = new Morebits.wiki.api('stabilisatie-instellingen configureren...', query, ctx.onStabilizeSuccess, ctx.statusElement, ctx.onStabilizeFailure);
 		ctx.stabilizeProcessApi.setParent(this);
 		ctx.stabilizeProcessApi.post();
 	};
@@ -4731,14 +4738,14 @@ Morebits.wiki.preview = function(previewbox) {
 			query.section = 'new';
 			query.sectiontitle = sectionTitle;
 		}
-		var renderApi = new Morebits.wiki.api('loading...', query, fnRenderSuccess, new Morebits.status('Preview'));
+		var renderApi = new Morebits.wiki.api('laden...', query, fnRenderSuccess, new Morebits.status('Voorbeeld'));
 		return renderApi.post();
 	};
 
 	var fnRenderSuccess = function(apiobj) {
 		var html = apiobj.getResponse().parse.text;
 		if (!html) {
-			apiobj.statelem.error('failed to retrieve preview, or template was blanked');
+			apiobj.statelem.error('ophalen van voorbeeld mislukt, of het sjabloon is leeggemaakt');
 			return;
 		}
 		previewbox.innerHTML = html;
@@ -5121,7 +5128,7 @@ Morebits.userspaceLogger = function(logPageName) {
 			return def.reject();
 		}
 		var page = new Morebits.wiki.page('User:' + mw.config.get('wgUserName') + '/' + logPageName,
-			'Adding entry to userspace log'); // make this '... to ' + logPageName ?
+			'Regel toevoegen aan logboek in gebruikersruimte'); // make this '... to ' + logPageName ?
 		page.load(function(pageobj) {
 			// add blurb if log page doesn't exist or is blank
 			var text = pageobj.getPageText() || this.initialText;
@@ -5514,7 +5521,7 @@ Morebits.batchOperation = function(currentAction) {
 		},
 
 		// internal counters, etc.
-		statusElement: new Morebits.status(currentAction || 'Performing batch operation'),
+		statusElement: new Morebits.status(currentAction || 'Batchbewerking uitvoeren'),
 		worker: null, // function that executes for each item in pageList
 		postFinish: null, // function that executes when the whole batch has been processed
 		countStarted: 0,
@@ -5566,7 +5573,7 @@ Morebits.batchOperation = function(currentAction) {
 		 */
 	this.run = function(worker, postFinish) {
 		if (ctx.running) {
-			ctx.statusElement.error('Batch operation is already running');
+			ctx.statusElement.error('Batchbewerking is al bezig');
 			return;
 		}
 		ctx.running = true;
@@ -5581,7 +5588,7 @@ Morebits.batchOperation = function(currentAction) {
 
 		var total = ctx.pageList.length;
 		if (!total) {
-			ctx.statusElement.info('no pages specified');
+			ctx.statusElement.info('geen pagina\'s opgegeven');
 			ctx.running = false;
 			if (ctx.postFinish) {
 				ctx.postFinish();
@@ -5623,10 +5630,10 @@ Morebits.batchOperation = function(currentAction) {
 				if (arg.getPageName || arg.pageName || (arg.query && arg.query.title)) {
 					// we know the page title - display a relevant message
 					var pageName = arg.getPageName ? arg.getPageName() : arg.pageName || arg.query.title;
-					statelem.info(['done (', createPageLink(pageName), ')']);
+					statelem.info(['klaar (', createPageLink(pageName), ')']);
 				} else {
 					// we don't know the page title - just display a generic message
-					statelem.info('done');
+					statelem.info('klaar');
 				}
 			} else {
 				// remove the status line automatically produced by Morebits.wiki.*
@@ -5634,7 +5641,7 @@ Morebits.batchOperation = function(currentAction) {
 			}
 
 		} else if (typeof arg === 'string' && ctx.options.preserveIndividualStatusLines) {
-			new Morebits.status(arg, ['done (', createPageLink(arg), ')']);
+			new Morebits.status(arg, ['klaar (', createPageLink(arg), ')']);
 		}
 
 		ctx.countFinishedSuccess++;
@@ -5669,7 +5676,7 @@ Morebits.batchOperation = function(currentAction) {
 		var total = ctx.pageList.length;
 		if (ctx.countFinished < total) {
 			var progress = Math.round(100 * ctx.countFinished / total);
-			ctx.statusElement.status(msg('percent', progress, progress + '%'));
+			ctx.statusElement.status(progress + '%');
 
 			// start a new chunk if we're close enough to the end of the previous chunk, and
 			// we haven't already started the next one
@@ -5678,7 +5685,7 @@ Morebits.batchOperation = function(currentAction) {
 				fnStartNewChunk();
 			}
 		} else if (ctx.countFinished === total) {
-			var statusString = 'Done (' + ctx.countFinishedSuccess +
+			var statusString = 'Klaar (' + ctx.countFinishedSuccess +
 					'/' + ctx.countFinished + ' acties succesvol uitgevoerd)';
 			if (ctx.countFinishedSuccess < ctx.countFinished) {
 				ctx.statusElement.warn(statusString);
@@ -5693,7 +5700,7 @@ Morebits.batchOperation = function(currentAction) {
 		} else {
 			// ctx.countFinished > total
 			// just for giggles! (well, serious debugging, actually)
-			ctx.statusElement.warn('Done (overshot by ' + (ctx.countFinished - total) + ')');
+			ctx.statusElement.warn('Klaar (' + (ctx.countFinished - total) + ' te veel)');
 			Morebits.wiki.removeCheckpoint();
 			ctx.running = false;
 		}
