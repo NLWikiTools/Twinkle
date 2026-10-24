@@ -3537,29 +3537,23 @@ Morebits.wiki.page = function(pageName, status) {
 			return;
 		}
 
-		// If a link is present, don't need to check if it's patrolled
-		if ($('.patrollink').length) {
-			var patrolhref = $('.patrollink a').attr('href');
-			ctx.rcid = mw.util.getParamValue('rcid', patrolhref);
-			fnProcessPatrol(this, this);
-		} else {
-			var patrolQuery = {
-				action: 'query',
-				prop: 'info',
-				meta: 'tokens',
-				type: 'patrol', // as long as we're querying, might as well get a token
-				list: 'recentchanges', // check if the page is unpatrolled
-				titles: ctx.pageName,
-				rcprop: 'patrolled',
-				rctitle: ctx.pageName,
-				rclimit: 1,
-				format: 'json'
-			};
+		// Haal alle ongecontroleerde wijzigingen van de pagina op, zodat niet
+		// alleen de laatste revisie maar ook de aanmaak (en eventuele
+		// tussenliggende bewerkingen) als gecontroleerd gemarkeerd worden
+		var patrolQuery = {
+			action: 'query',
+			meta: 'tokens',
+			type: 'patrol', // as long as we're querying, might as well get a token
+			list: 'recentchanges', // check if the page is unpatrolled
+			rcprop: 'ids|patrolled',
+			rctitle: ctx.pageName,
+			rclimit: 'max',
+			format: 'json'
+		};
 
-			ctx.patrolApi = new Morebits.wiki.api('token ophalen...', patrolQuery, fnProcessPatrol);
-			ctx.patrolApi.setParent(this);
-			ctx.patrolApi.post();
-		}
+		ctx.patrolApi = new Morebits.wiki.api('token ophalen...', patrolQuery, fnProcessPatrol);
+		ctx.patrolApi.setParent(this);
+		ctx.patrolApi.post();
 	};
 
 	/**
@@ -4291,44 +4285,40 @@ Morebits.wiki.page = function(pageName, status) {
 	};
 
 	var fnProcessPatrol = function() {
-		var query = {
-			action: 'patrol',
-			format: 'json'
-		};
+		var response = ctx.patrolApi.getResponse().query;
 
-		// Didn't need to load the page
-		if (ctx.rcid) {
-			query.rcid = ctx.rcid;
-			query.token = mw.user.tokens.get('patrolToken');
-		} else {
-			var response = ctx.patrolApi.getResponse().query;
-
-			// Don't patrol if not unpatrolled
-			if (!response.recentchanges[0].unpatrolled) {
-				return;
-			}
-
-			var lastrevid = response.pages[0].lastrevid;
-			if (!lastrevid) {
-				return;
-			}
-			query.revid = lastrevid;
-
-			var token = response.tokens.csrftoken;
-			if (!token) {
-				return;
-			}
-			query.token = token;
+		// Don't patrol if not unpatrolled
+		var rcids = response.recentchanges.filter(function(rc) {
+			return rc.unpatrolled;
+		}).map(function(rc) {
+			return rc.rcid;
+		});
+		if (!rcids.length) {
+			return;
 		}
-		if (ctx.changeTags) {
-			query.tags = ctx.changeTags;
+
+		var token = response.tokens.patroltoken;
+		if (!token) {
+			return;
 		}
 
 		var patrolStat = new Morebits.status('Pagina als gecontroleerd markeren');
 
-		ctx.patrolProcessApi = new Morebits.wiki.api('pagina controleren...', query, null, patrolStat);
-		ctx.patrolProcessApi.setParent(this);
-		ctx.patrolProcessApi.post();
+		rcids.forEach(function(rcid) {
+			var query = {
+				action: 'patrol',
+				rcid: rcid,
+				token: token,
+				format: 'json'
+			};
+			if (ctx.changeTags) {
+				query.tags = ctx.changeTags;
+			}
+
+			ctx.patrolProcessApi = new Morebits.wiki.api('pagina controleren...', query, null, patrolStat);
+			ctx.patrolProcessApi.setParent(this);
+			ctx.patrolProcessApi.post();
+		}, this);
 	};
 
 	// Ensure that the page is curatable
